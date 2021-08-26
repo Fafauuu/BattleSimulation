@@ -2,7 +2,7 @@ package service;
 
 import model.BattleField;
 
-public class PrintingFieldServiceConsoleImpl implements PrintingFieldService{
+public class PrintingFieldServiceConsoleImpl implements PrintingFieldService {
     private final BattleField battleField;
 
     public PrintingFieldServiceConsoleImpl(BattleField battleField) {

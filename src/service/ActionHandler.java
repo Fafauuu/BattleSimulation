@@ -50,8 +50,7 @@ public class ActionHandler {
                     tryToAttack(request);
                     break;
             }
-        }
-        else request.addAttempt();
+        } else request.addAttempt();
     }
 
     private void tryToMove(Request request, int XModifier, int YModifier) {
@@ -63,7 +62,7 @@ public class ActionHandler {
         }
     }
 
-    private void tryToAttack(Request request){
+    private void tryToAttack(Request request) {
         try {
             engine.attack(request.getRequester());
             request.setFulfilled(true);

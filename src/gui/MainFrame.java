@@ -1,15 +1,16 @@
 package gui;
 
 import model.BattleField;
+import model.UnitDatabase;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainFrame extends JFrame {
 
-    public MainFrame(BattleField battlefield){
+    public MainFrame(BattleField battlefield, UnitDatabase unitDatabase) {
 
-        MainPanel mainPanel = new MainPanel(battlefield);
+        MainPanel mainPanel = new MainPanel(battlefield, unitDatabase);
         mainPanel.setBounds(mainPanel.getBounds());
 
         this.setSize(new Dimension(mainPanel.getPanelSize() + 16, mainPanel.getPanelSize() + 39));

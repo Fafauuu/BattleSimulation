@@ -10,18 +10,18 @@ public class Request {
     public Request(Unit requester, Actions action) {
         this.fulfilAttempts = 0;
         this.action = action;
-        this.fulfilled = false;;
+        this.fulfilled = false;
+        ;
         this.requester = requester;
 
-        if (action == Actions.ATTACK){
+        if (action == Actions.ATTACK) {
             maxFulfilAttempts = 1;
-        }
-        else {
+        } else {
             maxFulfilAttempts = 4;
         }
     }
 
-    public void addAttempt(){
+    public void addAttempt() {
         fulfilAttempts++;
     }
 

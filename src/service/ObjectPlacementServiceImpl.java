@@ -13,7 +13,7 @@ public class ObjectPlacementServiceImpl implements ObjectPlacementService {
     }
 
     @Override
-    public void placeUnit(Unit unit){
+    public void placeUnit(Unit unit) {
         int XCoordinate = unit.getXCoordinate();
         int YCoordinate = unit.getYCoordinate();
 
@@ -40,7 +40,7 @@ public class ObjectPlacementServiceImpl implements ObjectPlacementService {
     }
 
     @Override
-    public void placeStaticObject(StaticSimulationObject staticSimulationObject){
+    public void placeStaticObject(StaticSimulationObject staticSimulationObject) {
         int XCoordinate = staticSimulationObject.getXCoordinate();
         int YCoordinate = staticSimulationObject.getYCoordinate();
 

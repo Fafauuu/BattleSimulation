@@ -2,7 +2,9 @@ package model;
 
 import gui.ObjectLabel;
 
-public class Grass implements StaticSimulationObject, Passable, Coverable{
+import java.awt.*;
+
+public class Grass implements StaticSimulationObject, Passable, Coverable {
     private final int XCoordinate;
     private final int YCoordinate;
     private final ObjectLabel label;
@@ -10,7 +12,7 @@ public class Grass implements StaticSimulationObject, Passable, Coverable{
     public Grass(int XCoordinate, int YCoordinate) {
         this.XCoordinate = XCoordinate;
         this.YCoordinate = YCoordinate;
-        this.label = new ObjectLabel(this,"src/icons/grass.png");
+        this.label = new ObjectLabel(this, "src/icons/grass.png", Color.GREEN);
     }
 
     @Override

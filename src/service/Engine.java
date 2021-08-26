@@ -3,6 +3,7 @@ package service;
 import exceptions.CantMoveObjectException;
 import exceptions.CantStackObjectsException;
 import exceptions.ObjectOutOfFieldException;
+import gui.MainFrame;
 import model.*;
 
 import java.util.ArrayList;
@@ -12,12 +13,19 @@ import java.util.Set;
 public class Engine {
 
     private final ActionHandler actionHandler;
+    private final BattleField battleField;
     private final ObjectPlacementService objectPlacementService;
     private final UnitDatabase unitDatabase;
     private final PrintingFieldService printingFieldService;
+    private final MainFrame gui = null;
 
-    public Engine(ObjectPlacementService unitPlacementService, UnitDatabase unitDatabase, PrintingFieldService printingFieldService) {
+    public Engine(BattleField battleField,
+                  ObjectPlacementService unitPlacementService,
+                  UnitDatabase unitDatabase,
+                  PrintingFieldService printingFieldService
+    ) {
         this.actionHandler = new ActionHandler(this);
+        this.battleField = battleField;
         this.objectPlacementService = unitPlacementService;
         this.unitDatabase = unitDatabase;
         this.printingFieldService = printingFieldService;
@@ -25,11 +33,24 @@ public class Engine {
 
     public void simulateBattle() {
         printingFieldService.print();
+        MainFrame gui = new MainFrame(battleField, unitDatabase);
+        gui.setVisible(true);
+        pauseSimulation(1000);
         while (!simulationStopCondition()) {
             setTargets();
             setAllRequests();
             actionHandler.simulateTurn();
             printingFieldService.print();
+            gui.repaint();
+            pauseSimulation(1000);
+        }
+    }
+
+    private void pauseSimulation(int duration) {
+        try {
+            Thread.sleep(duration);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -46,10 +67,9 @@ public class Engine {
     private Actions setActionRequest(Unit unit) {
         Actions action;
         double distance = countDistance(unit, unit.getTarget());
-        if (distance > unit.getRange()){
+        if (distance > unit.getRange()) {
             action = setFirstDirection(unit);
-        }
-        else{
+        } else {
             action = Actions.ATTACK;
         }
         return action;
@@ -59,11 +79,11 @@ public class Engine {
         return setFirstAndSecondDirection(unit).get(0);
     }
 
-    private void setRequestWithFirstDirection(Unit unit){
+    private void setRequestWithFirstDirection(Unit unit) {
         actionHandler.setRequest(unit, setFirstAndSecondDirection(unit).get(0));
     }
 
-    private void setRequestWithSecondDirection(Unit unit){
+    private void setRequestWithSecondDirection(Unit unit) {
         actionHandler.setRequest(unit, setFirstAndSecondDirection(unit).get(1));
     }
 
@@ -81,53 +101,48 @@ public class Engine {
         boolean XDifferenceGreaterOrEqualToY = Math.abs(XDifference) >= Math.abs(YDifference);
 
 
-        if (XDifference <= 0 && YDifference > 0){
-            if (XDifferenceGreaterThatY){
+        if (XDifference <= 0 && YDifference > 0) {
+            if (XDifferenceGreaterThatY) {
                 firstDirection = Actions.MOVE_UP;
                 secondDirection = Actions.MOVE_RIGHT;
-            }
-            else {
+            } else {
                 firstDirection = Actions.MOVE_RIGHT;
                 secondDirection = Actions.MOVE_UP;
             }
         }
-        if (XDifference > 0 && YDifference >= 0){
-            if (XDifferenceGreaterOrEqualToY){
+        if (XDifference > 0 && YDifference >= 0) {
+            if (XDifferenceGreaterOrEqualToY) {
                 firstDirection = Actions.MOVE_DOWN;
                 secondDirection = Actions.MOVE_RIGHT;
-            }
-            else {
+            } else {
                 firstDirection = Actions.MOVE_RIGHT;
                 secondDirection = Actions.MOVE_DOWN;
             }
         }
-        if (XDifference >= 0 && YDifference < 0){
-            if (XDifferenceGreaterThatY){
+        if (XDifference >= 0 && YDifference < 0) {
+            if (XDifferenceGreaterThatY) {
                 firstDirection = Actions.MOVE_DOWN;
                 secondDirection = Actions.MOVE_LEFT;
-            }
-            else {
+            } else {
                 firstDirection = Actions.MOVE_LEFT;
                 secondDirection = Actions.MOVE_DOWN;
             }
         }
-        if (XDifference < 0 && YDifference <= 0){
-            if (XDifferenceGreaterOrEqualToY){
+        if (XDifference < 0 && YDifference <= 0) {
+            if (XDifferenceGreaterOrEqualToY) {
                 firstDirection = Actions.MOVE_UP;
                 secondDirection = Actions.MOVE_LEFT;
-            }
-            else {
+            } else {
                 firstDirection = Actions.MOVE_LEFT;
                 secondDirection = Actions.MOVE_UP;
             }
         }
         if (firstDirection != null) {
             return new ArrayList<>(List.of(firstDirection, secondDirection));
-        }
-        else throw new RuntimeException("Null pointer in setting first and second direction");
+        } else throw new RuntimeException("Null pointer in setting first and second direction");
     }
 
-    public void setTargets(){
+    public void setTargets() {
         for (Unit unit : unitDatabase.getAllUnits()) {
             unit.setTarget(findClosestEnemy(unit));
         }
@@ -140,13 +155,12 @@ public class Engine {
         double distance;
 
         for (Unit enemy : setOfEnemies) {
-            if (minDistance == 0){
+            if (minDistance == 0) {
                 minDistance = countDistance(unit, enemy);
                 target = enemy;
-            }
-            else{
+            } else {
                 distance = countDistance(unit, enemy);
-                if (distance < minDistance){
+                if (distance < minDistance) {
                     minDistance = distance;
                     target = enemy;
                 }
@@ -157,10 +171,9 @@ public class Engine {
 
     private Set<Unit> setUnitsToScan(Unit unit) {
         Set<Unit> setOfEnemies;
-        if (unit.getSide() == Side.BLUE){
+        if (unit.getSide() == Side.BLUE) {
             setOfEnemies = unitDatabase.getRedUnits();
-        }
-        else setOfEnemies = unitDatabase.getBlueUnits();
+        } else setOfEnemies = unitDatabase.getBlueUnits();
         return setOfEnemies;
     }
 
@@ -175,7 +188,7 @@ public class Engine {
     }
 
 
-    public void move(Unit unit, int XPositionModifier, int YPositionModifier) throws CantMoveObjectException{
+    public void move(Unit unit, int XPositionModifier, int YPositionModifier) throws CantMoveObjectException {
         int previousXCoordinate = unit.getXCoordinate();
         int previousYCoordinate = unit.getYCoordinate();
 
@@ -202,7 +215,7 @@ public class Engine {
 
         target.setHp(target.getHp() - requester.getAttack());
 
-        if (target.getHp() <= 0){
+        if (target.getHp() <= 0) {
             objectPlacementService.removeObjectAndReplaceWithStaticObject(target);
             unitDatabase.removeUnit(target);
             target.setDead();

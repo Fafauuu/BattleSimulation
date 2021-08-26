@@ -1,12 +1,16 @@
 package model;
 
 import gui.ObjectLabel;
+import gui.UnitLabel;
 
-public class Knight implements Unit{
+import java.awt.*;
+
+public class Knight implements Unit {
     private final Side side;
     private int XCoordinate;
     private int YCoordinate;
     private Unit target;
+    private int maxHp;
     private int hp;
     private final int attack;
     private final int range;
@@ -17,11 +21,23 @@ public class Knight implements Unit{
         this.side = side;
         this.XCoordinate = XCoordinate;
         this.YCoordinate = YCoordinate;
-        this.hp = 100;
+        this.maxHp = 100;
+        this.hp = maxHp;
         this.attack = 20;
         this.range = 1;
         this.alive = true;
-        this.label = new ObjectLabel(this,"knight.png");
+
+        this.label = new UnitLabel(this, "src/icons/knight.png", setBackgroundColor(side));
+    }
+
+    private Color setBackgroundColor(Side side) {
+        Color backgroundColor;
+        if (side == Side.RED) {
+            backgroundColor = Color.RED;
+        } else {
+            backgroundColor = Color.CYAN;
+        }
+        return backgroundColor;
     }
 
     @Override
@@ -42,6 +58,11 @@ public class Knight implements Unit{
     @Override
     public Unit getTarget() {
         return target;
+    }
+
+    @Override
+    public int getMaxHp() {
+        return maxHp;
     }
 
     @Override

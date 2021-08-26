@@ -30,23 +30,22 @@ public class UnitDatabaseImpl implements UnitDatabase {
     }
 
     @Override
-    public void addBlueUnit(Unit unit){
+    public void addBlueUnit(Unit unit) {
         blueUnits.add(unit);
         allUnits.add(unit);
     }
 
     @Override
-    public void addRedUnit(Unit unit){
+    public void addRedUnit(Unit unit) {
         redUnits.add(unit);
         allUnits.add(unit);
     }
 
     @Override
     public void removeUnit(Unit unit) {
-        if (unit.getSide() == Side.BLUE){
+        if (unit.getSide() == Side.BLUE) {
             blueUnits.remove(unit);
-        }
-        else{
+        } else {
             redUnits.remove(unit);
         }
         allUnits.remove(unit);
