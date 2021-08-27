@@ -53,7 +53,7 @@ public class MainPanel extends JPanel {
     }
 
     public void addUnitLabels() {
-        Set<Unit> units = unitDatabase.getAllUnits();
+        List<Unit> units = unitDatabase.getAllUnits();
         for (Unit unit : units) {
             unitLabels.add(unit.getLabel());
         }
@@ -70,8 +70,8 @@ public class MainPanel extends JPanel {
     }
 
     public void repaintUnits() {
-        Set<Unit> setOfUnits = unitDatabase.getAllUnits();
-        for (Unit unit : setOfUnits) {
+        List<Unit> listOfUnits = unitDatabase.getAllUnits();
+        for (Unit unit : listOfUnits) {
             unit.getLabel().setBounds(unit.getYCoordinate() * ObjectLabelSize.SIZE,
                     unit.getXCoordinate() * ObjectLabelSize.SIZE,
                     ObjectLabelSize.SIZE, ObjectLabelSize.SIZE);

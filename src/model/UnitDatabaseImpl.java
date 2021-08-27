@@ -1,31 +1,33 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class UnitDatabaseImpl implements UnitDatabase {
-    private final Set<Unit> allUnits;
-    private final Set<Unit> blueUnits;
-    private final Set<Unit> redUnits;
+    private final List<Unit> allUnits;
+    private final List<Unit> blueUnits;
+    private final List<Unit> redUnits;
 
     public UnitDatabaseImpl() {
-        this.allUnits = new HashSet<>();
-        this.blueUnits = new HashSet<>();
-        this.redUnits = new HashSet<>();
+        this.allUnits = new ArrayList<>();
+        this.blueUnits = new ArrayList<>();
+        this.redUnits = new ArrayList<>();
     }
 
     @Override
-    public Set<Unit> getAllUnits() {
+    public List<Unit> getAllUnits() {
         return allUnits;
     }
 
     @Override
-    public Set<Unit> getBlueUnits() {
+    public List<Unit> getBlueUnits() {
         return blueUnits;
     }
 
     @Override
-    public Set<Unit> getRedUnits() {
+    public List<Unit> getRedUnits() {
         return redUnits;
     }
 

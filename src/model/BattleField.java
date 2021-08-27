@@ -5,6 +5,8 @@ import exceptions.NoSuchObjectException;
 import exceptions.ObjectOutOfFieldException;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class BattleField {
@@ -14,10 +16,10 @@ public class BattleField {
 
     public BattleField(int fieldSize) {
         this.fieldSize = fieldSize;
-        this.staticSimulationObjects = new ArrayList<>();
+        this.staticSimulationObjects = new LinkedList<>();
         this.battleField = new ArrayList<>(fieldSize);
         for (int i = 0; i < fieldSize; i++) {
-            this.battleField.add(new ArrayList<>(fieldSize));
+            this.battleField.add(i, new ArrayList<>(fieldSize));
         }
         coverFieldWithGrass(fieldSize);
     }
@@ -30,6 +32,15 @@ public class BattleField {
                 staticSimulationObjects.add(grass);
             }
         }
+    }
+
+    public void plantTree(int xCoordinate, int yCoordinate){
+        Tree tree = new Tree(xCoordinate,yCoordinate);
+        if (xCoordinate >= fieldSize || xCoordinate < 0 || yCoordinate >= fieldSize || yCoordinate < 0){
+            throw new ObjectOutOfFieldException(tree + "placed out of field");
+        }
+        battleField.get(xCoordinate).add(yCoordinate, tree);
+        staticSimulationObjects.add(0,tree);
     }
 
     public StaticSimulationObject getStaticSimulationObjectWithXAndY(int x, int y){

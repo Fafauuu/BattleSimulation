@@ -33,7 +33,11 @@ public class ActionHandler {
 
     public void perform(Request request) {
         if (request.getRequester().isAlive()) {
-            switch (request.getAction()) {
+            Actions action = request.getAction();
+            if (request.getFulfilAttempts() == request.getMaxFulfilAttempts()){
+                action = request.getSecondaryAction();
+            }
+            switch (action) {
                 case MOVE_UP:
                     tryToMove(request, -1, 0);
                     break;
@@ -82,7 +86,7 @@ public class ActionHandler {
     }
 
     public void dropUnfulfilledRequests() {
-        requests.removeIf(request -> request.getFulfilAttempts() == request.getMaxFulfilAttempts());
+        requests.removeIf(request -> request.getFulfilAttempts() > request.getMaxFulfilAttempts());
     }
 
     public void dropAllRequests() {
@@ -91,6 +95,9 @@ public class ActionHandler {
 
     public void setRequest(Unit unit, Actions action) {
         requests.add(new Request(unit, action));
+    }
+    public void setRequest(Unit unit, Actions action, Actions secondAction) {
+        requests.add(new Request(unit, action, secondAction));
     }
 
 

@@ -17,7 +17,6 @@ public class Engine {
     private final ObjectPlacementService objectPlacementService;
     private final UnitDatabase unitDatabase;
     private final PrintingFieldService printingFieldService;
-    private final MainFrame gui = null;
 
     public Engine(BattleField battleField,
                   ObjectPlacementService unitPlacementService,
@@ -36,13 +35,23 @@ public class Engine {
         MainFrame gui = new MainFrame(battleField, unitDatabase);
         gui.setVisible(true);
         pauseSimulation(1000);
-        while (!simulationStopCondition()) {
-            setTargets();
-            setAllRequests();
+        for (int turn = 0; !simulationStopCondition(); turn++) {
+            List<Unit> units = SetUnitsTurn(turn);
+            setTargets(units);
+            setAllRequests(units);
             actionHandler.simulateTurn();
             printingFieldService.print();
             gui.repaint();
             pauseSimulation(1000);
+        }
+    }
+
+    private List<Unit> SetUnitsTurn(int turn) {
+        if (turn % 2 == 0){
+            return unitDatabase.getBlueUnits();
+        }
+        else{
+            return unitDatabase.getRedUnits();
         }
     }
 
@@ -58,33 +67,54 @@ public class Engine {
         return unitDatabase.getBlueUnits().isEmpty() || unitDatabase.getRedUnits().isEmpty();
     }
 
-    private void setAllRequests() {
-        for (Unit unit : unitDatabase.getAllUnits()) {
-            actionHandler.setRequest(unit, setActionRequest(unit));
+    public void setTargets(List<Unit> units) {
+        for (Unit unit : units) {
+            unit.setTarget(findClosestEnemy(unit));
         }
     }
 
-    private Actions setActionRequest(Unit unit) {
-        Actions action;
+    private Unit findClosestEnemy(Unit unit) {
+        List<Unit> listOfEnemies = setUnitsToScan(unit);
+        Unit target = null;
+        double minDistance = 0;
+        double distance;
+
+        for (Unit enemy : listOfEnemies) {
+            if (minDistance == 0) {
+                minDistance = countDistance(unit, enemy);
+                target = enemy;
+            } else {
+                distance = countDistance(unit, enemy);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    target = enemy;
+                }
+            }
+        }
+        return target;
+    }
+
+    private void setAllRequests(List<Unit> units) {
+        for (Unit unit : units) {
+            setActionRequest(unit);
+        }
+    }
+
+    private void setActionRequest(Unit unit) {
         double distance = countDistance(unit, unit.getTarget());
         if (distance > unit.getRange()) {
-            action = setFirstDirection(unit);
+            actionHandler.setRequest(unit, setFirstDirection(unit), setSecondDirection(unit));
         } else {
-            action = Actions.ATTACK;
+            actionHandler.setRequest(unit, Actions.ATTACK);
         }
-        return action;
     }
 
     private Actions setFirstDirection(Unit unit) {
         return setFirstAndSecondDirection(unit).get(0);
     }
 
-    private void setRequestWithFirstDirection(Unit unit) {
-        actionHandler.setRequest(unit, setFirstAndSecondDirection(unit).get(0));
-    }
-
-    private void setRequestWithSecondDirection(Unit unit) {
-        actionHandler.setRequest(unit, setFirstAndSecondDirection(unit).get(1));
+    private Actions setSecondDirection(Unit unit) {
+        return setFirstAndSecondDirection(unit).get(1);
     }
 
     private List<Actions> setFirstAndSecondDirection(Unit unit) {
@@ -142,39 +172,12 @@ public class Engine {
         } else throw new RuntimeException("Null pointer in setting first and second direction");
     }
 
-    public void setTargets() {
-        for (Unit unit : unitDatabase.getAllUnits()) {
-            unit.setTarget(findClosestEnemy(unit));
-        }
-    }
-
-    private Unit findClosestEnemy(Unit unit) {
-        Set<Unit> setOfEnemies = setUnitsToScan(unit);
-        Unit target = null;
-        double minDistance = 0;
-        double distance;
-
-        for (Unit enemy : setOfEnemies) {
-            if (minDistance == 0) {
-                minDistance = countDistance(unit, enemy);
-                target = enemy;
-            } else {
-                distance = countDistance(unit, enemy);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    target = enemy;
-                }
-            }
-        }
-        return target;
-    }
-
-    private Set<Unit> setUnitsToScan(Unit unit) {
-        Set<Unit> setOfEnemies;
+    private List<Unit> setUnitsToScan(Unit unit) {
+        List<Unit> listOfEnemies;
         if (unit.getSide() == Side.BLUE) {
-            setOfEnemies = unitDatabase.getRedUnits();
-        } else setOfEnemies = unitDatabase.getBlueUnits();
-        return setOfEnemies;
+            listOfEnemies = unitDatabase.getRedUnits();
+        } else listOfEnemies = unitDatabase.getBlueUnits();
+        return listOfEnemies;
     }
 
     private double countDistance(Unit unit, Unit enemy) {

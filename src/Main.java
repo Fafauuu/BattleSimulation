@@ -16,9 +16,15 @@ public class Main {
 
 
         Knight knight1 = simulationObjectFactory.createKnight(Side.BLUE, 0, 0);
-        Knight knight2 = simulationObjectFactory.createKnight(Side.RED, 4, 4);
+        Knight knight2 = simulationObjectFactory.createKnight(Side.BLUE, 0, 1);
+        Knight knight3 = simulationObjectFactory.createKnight(Side.RED, 4, 3);
+        Knight knight4 = simulationObjectFactory.createKnight(Side.RED, 4, 1);
+        battleField.plantTree(1,1);
+        battleField.plantTree(3,2);
         objectPlacementService.placeUnit(knight1);
         objectPlacementService.placeUnit(knight2);
+        objectPlacementService.placeUnit(knight3);
+        objectPlacementService.placeUnit(knight4);
         printingFieldService.print();
         engine.simulateBattle();
 

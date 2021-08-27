@@ -1,11 +1,11 @@
 package model;
 
-import java.util.Set;
+import java.util.List;
 
 public interface UnitDatabase {
-    Set<Unit> getAllUnits();
-    Set<Unit> getBlueUnits();
-    Set<Unit> getRedUnits();
+    List<Unit> getAllUnits();
+    List<Unit> getBlueUnits();
+    List<Unit> getRedUnits();
 
     void addBlueUnit(Unit unit);
     void addRedUnit(Unit unit);

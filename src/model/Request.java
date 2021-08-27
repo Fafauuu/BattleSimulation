@@ -5,21 +5,37 @@ public class Request {
     private int fulfilAttempts;
     private final int maxFulfilAttempts;
     private final Actions action;
+    private final Actions secondaryAction;
     private boolean fulfilled;
 
     public Request(Unit requester, Actions action) {
         this.fulfilAttempts = 0;
         this.action = action;
+        this.secondaryAction = null;
         this.fulfilled = false;
-        ;
         this.requester = requester;
+        maxFulfilAttempts = setMaxFulfilAttempts(action);
+    }
 
+    public Request(Unit requester, Actions action, Actions secondaryAction) {
+        this.fulfilAttempts = 0;
+        this.action = action;
+        this.secondaryAction = secondaryAction;
+        this.fulfilled = false;
+        this.requester = requester;
+        maxFulfilAttempts = setMaxFulfilAttempts(action);
+    }
+
+    private int setMaxFulfilAttempts(Actions action) {
+        final int maxFulfilAttempts;
         if (action == Actions.ATTACK) {
             maxFulfilAttempts = 1;
         } else {
             maxFulfilAttempts = 4;
         }
+        return maxFulfilAttempts;
     }
+
 
     public void addAttempt() {
         fulfilAttempts++;
@@ -35,6 +51,10 @@ public class Request {
 
     public Actions getAction() {
         return action;
+    }
+
+    public Actions getSecondaryAction() {
+        return secondaryAction;
     }
 
     public Unit getRequester() {

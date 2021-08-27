@@ -12,7 +12,6 @@ public class ObjectLabel extends JLabel {
 
     public ObjectLabel(SimulationObject labeledObject, String iconPath, Color backgroundColor) {
 
-
         this.labeledObject = labeledObject;
         Border border = BorderFactory.createLineBorder(Color.BLACK, 1);
         this.setBorder(border);
@@ -27,5 +26,12 @@ public class ObjectLabel extends JLabel {
 
     public SimulationObject getLabeledObject() {
         return labeledObject;
+    }
+
+    @Override
+    public String toString() {
+        return "ObjectLabel{" +
+                "labeledObject=" + labeledObject +
+                '}';
     }
 }
