@@ -1,4 +1,6 @@
-package model;
+package service;
+
+import model.Unit;
 
 import java.util.List;
 

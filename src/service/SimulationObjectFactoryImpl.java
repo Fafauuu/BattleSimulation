@@ -2,7 +2,6 @@ package service;
 
 import model.Knight;
 import model.Side;
-import model.UnitDatabase;
 
 public class SimulationObjectFactoryImpl implements SimulationObjectFactory {
     private final UnitDatabase unitDatabase;

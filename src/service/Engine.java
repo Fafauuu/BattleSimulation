@@ -8,7 +8,8 @@ import model.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Engine {
 
@@ -17,6 +18,8 @@ public class Engine {
     private final ObjectPlacementService objectPlacementService;
     private final UnitDatabase unitDatabase;
     private final PrintingFieldService printingFieldService;
+    private MainFrame gui;
+    private final Timer animationTimer = new Timer();
 
     public Engine(BattleField battleField,
                   ObjectPlacementService unitPlacementService,
@@ -32,7 +35,7 @@ public class Engine {
 
     public void simulateBattle() {
         printingFieldService.print();
-        MainFrame gui = new MainFrame(battleField, unitDatabase);
+        gui = new MainFrame(battleField, unitDatabase);
         gui.setVisible(true);
         pauseSimulation(1000);
         for (int turn = 0; !simulationStopCondition(); turn++) {
@@ -41,16 +44,15 @@ public class Engine {
             setAllRequests(units);
             actionHandler.simulateTurn();
             printingFieldService.print();
-            gui.repaint();
-            pauseSimulation(1000);
+            pauseSimulation(3000);
         }
+        gui.repaint();
     }
 
     private List<Unit> SetUnitsTurn(int turn) {
-        if (turn % 2 == 0){
+        if (turn % 2 == 0) {
             return unitDatabase.getBlueUnits();
-        }
-        else{
+        } else {
             return unitDatabase.getRedUnits();
         }
     }
@@ -102,7 +104,7 @@ public class Engine {
 
     private void setActionRequest(Unit unit) {
         double distance = countDistance(unit, unit.getTarget());
-        if (distance > unit.getRange()) {
+        if (distance > unit.getStatistics().getRange()) {
             actionHandler.setRequest(unit, setFirstDirection(unit), setSecondDirection(unit));
         } else {
             actionHandler.setRequest(unit, Actions.ATTACK);
@@ -200,6 +202,7 @@ public class Engine {
 
         try {
             objectPlacementService.placeUnit(unit);
+            gui.getMainPanel().repaintUnit(unit);
         } catch (ObjectOutOfFieldException e) {
             unit.setXCoordinate(unit.getXCoordinate() - XPositionModifier);
             unit.setYCoordinate(unit.getYCoordinate() - YPositionModifier);
@@ -216,12 +219,61 @@ public class Engine {
     public void attack(Unit requester) {
         Unit target = requester.getTarget();
 
-        target.setHp(target.getHp() - requester.getAttack());
-
-        if (target.getHp() <= 0) {
-            objectPlacementService.removeObjectAndReplaceWithStaticObject(target);
-            unitDatabase.removeUnit(target);
-            target.setDead();
+        if (requester.getStatistics().getMana() >= requester.getStatistics().getMaxMana()) {
+            requester.performSpecialAttack(this, unitDatabase);
+        } else {
+            requester.performBasicAttack(this, unitDatabase);
         }
+
+        removeUnitIfDead(target);
+
+        target.getUnitLabel().getHpBarLabel().updateHpBar();
+        target.getUnitLabel().getManaBarLabel().updateManaBar();
+    }
+
+    private void removeUnitIfDead(Unit target) {
+        if (target.getStatistics().getHp() <= 0) {
+
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    objectPlacementService.removeObjectAndReplaceWithStaticObject(target);
+                    unitDatabase.removeUnit(target);
+                    target.setDead();
+                    gui.getMainPanel().removeUnitLabel(target);
+                }
+            };
+            animationTimer.schedule(task, 700);
+        }
+    }
+
+    public int calculateBasicAttackDamage(Unit attacker, Unit defender, AttackTypes attackType) {
+        int attackDamageNegated
+                = (int) Math.ceil(attacker.getStatistics().getBasicAttack().getBaseDamage()
+                * calculateDamageNegationPercentage(attacker, defender, attackType));
+        return attacker.getStatistics().getBasicAttack().getBaseDamage() - attackDamageNegated;
+    }
+
+    public int calculateSpecialAttackDamage(Unit attacker, Unit defender, AttackTypes attackType) {
+        int attackDamageNegated
+                = (int) Math.ceil(attacker.getStatistics().getSpecialAttack().getBaseDamage()
+                * calculateDamageNegationPercentage(attacker, defender, attackType));
+        return attacker.getStatistics().getSpecialAttack().getBaseDamage() - attackDamageNegated;
+    }
+
+    public double calculateDamageNegationPercentage(Unit attacker, Unit defender, AttackTypes attackType) {
+        int defensiveStatisticValue;
+
+        if (attackType == AttackTypes.PHYSICAL) {
+            defensiveStatisticValue = defender.getStatistics().getArmour();
+        } else if (attackType == AttackTypes.MAGICAL) {
+            defensiveStatisticValue = defender.getStatistics().getMagicResist();
+        } else defensiveStatisticValue = 0;
+
+        return (double) defensiveStatisticValue / (defensiveStatisticValue + 100);
+    }
+
+    public Timer getAnimationTimer() {
+        return animationTimer;
     }
 }

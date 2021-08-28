@@ -1,9 +1,10 @@
-package model;
+package service;
+
+import model.Side;
+import model.Unit;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class UnitDatabaseImpl implements UnitDatabase {
     private final List<Unit> allUnits;

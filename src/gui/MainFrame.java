@@ -1,16 +1,18 @@
 package gui;
 
 import model.BattleField;
-import model.UnitDatabase;
+import service.UnitDatabase;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainFrame extends JFrame {
 
+    MainPanel mainPanel;
+
     public MainFrame(BattleField battlefield, UnitDatabase unitDatabase) {
 
-        MainPanel mainPanel = new MainPanel(battlefield, unitDatabase);
+        mainPanel = new MainPanel(battlefield, unitDatabase);
         mainPanel.setBounds(mainPanel.getBounds());
 
         this.setSize(new Dimension(mainPanel.getPanelSize() + 16, mainPanel.getPanelSize() + 39));
@@ -31,5 +33,9 @@ public class MainFrame extends JFrame {
 //        jLabel.setVisible(true);
 //        this.add(jLabel);
 
+    }
+
+    public MainPanel getMainPanel() {
+        return mainPanel;
     }
 }

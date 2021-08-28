@@ -3,19 +3,19 @@ package gui;
 import model.BattleField;
 import model.StaticSimulationObject;
 import model.Unit;
-import model.UnitDatabase;
+import service.UnitDatabase;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Timer;
 
 public class MainPanel extends JPanel {
     private final BattleField battleField;
     private final UnitDatabase unitDatabase;
     private final List<ObjectLabel> staticObjectLabels = new ArrayList<>();
-    private final List<ObjectLabel> unitLabels = new ArrayList<>();
+    private final List<UnitLabel> unitLabels = new ArrayList<>();
     private final int panelSize;
 
     public MainPanel(BattleField battleField, UnitDatabase unitDatabase) {
@@ -29,7 +29,6 @@ public class MainPanel extends JPanel {
         addUnitLabelsToPanel();
 
         this.setLayout(null);
-//        this.setPreferredSize(new Dimension(500,500));
         this.setBounds(0, 0, panelSize, panelSize);
         this.setBackground(Color.RED);
     }
@@ -55,12 +54,12 @@ public class MainPanel extends JPanel {
     public void addUnitLabels() {
         List<Unit> units = unitDatabase.getAllUnits();
         for (Unit unit : units) {
-            unitLabels.add(unit.getLabel());
+            unitLabels.add(unit.getUnitLabel());
         }
     }
 
     public void addUnitLabelsToPanel() {
-        for (ObjectLabel unitLabel : unitLabels) {
+        for (UnitLabel unitLabel : unitLabels) {
             unitLabel.setBounds(unitLabel.getLabeledObject().getYCoordinate() * ObjectLabelSize.SIZE,
                     unitLabel.getLabeledObject().getXCoordinate() * ObjectLabelSize.SIZE,
                     ObjectLabelSize.SIZE, ObjectLabelSize.SIZE);
@@ -69,24 +68,39 @@ public class MainPanel extends JPanel {
         }
     }
 
-    public void repaintUnits() {
-        List<Unit> listOfUnits = unitDatabase.getAllUnits();
-        for (Unit unit : listOfUnits) {
-            unit.getLabel().setBounds(unit.getYCoordinate() * ObjectLabelSize.SIZE,
-                    unit.getXCoordinate() * ObjectLabelSize.SIZE,
-                    ObjectLabelSize.SIZE, ObjectLabelSize.SIZE);
-            unit.getLabel().repaint();
+    public void repaintUnit(Unit unit) {
+        for (UnitLabel unitLabel : unitLabels) {
+            if (unitLabel.getLabeledObject() == unit) {
+                unitLabel.setBounds(unitLabel.getLabeledObject().getYCoordinate() * ObjectLabelSize.SIZE,
+                        unitLabel.getLabeledObject().getXCoordinate() * ObjectLabelSize.SIZE,
+                        ObjectLabelSize.SIZE, ObjectLabelSize.SIZE);
+//                unitLabel.repaint();
+            }
         }
+    }
 
+    public void removeUnitLabel(Unit unit) {
+        unitLabels.removeIf(unitLabel -> unitLabel.getLabeledObject() == unit);
     }
 
     public int getPanelSize() {
         return panelSize;
     }
 
+    @Override
     public void paint(Graphics g) {
         super.paint(g);
 
         repaintUnits();
+    }
+
+    public void repaintUnits() {
+        List<Unit> listOfUnits = unitDatabase.getAllUnits();
+        for (Unit unit : listOfUnits) {
+            unit.getUnitLabel().setBounds(unit.getYCoordinate() * ObjectLabelSize.SIZE,
+                    unit.getXCoordinate() * ObjectLabelSize.SIZE,
+                    ObjectLabelSize.SIZE, ObjectLabelSize.SIZE);
+            unit.getUnitLabel().repaint();
+        }
     }
 }

@@ -1,31 +1,40 @@
 package model;
 
-import gui.ObjectLabel;
+import gui.DamageLabel;
 import gui.UnitLabel;
+import service.Engine;
+import service.UnitDatabase;
 
 import java.awt.*;
+import java.util.Timer;
 
 public class Knight implements Unit {
     private final Side side;
     private int XCoordinate;
     private int YCoordinate;
     private Unit target;
-    private int maxHp;
-    private int hp;
-    private final int attack;
-    private final int range;
     private boolean alive;
-    private final ObjectLabel label;
+    private final Statistics statistics;
+    private final UnitLabel label;
 
     public Knight(Side side, int XCoordinate, int YCoordinate) {
         this.side = side;
         this.XCoordinate = XCoordinate;
         this.YCoordinate = YCoordinate;
-        this.maxHp = 100;
-        this.hp = maxHp;
-        this.attack = 20;
-        this.range = 1;
         this.alive = true;
+
+        this.statistics = new Statistics(
+                100,
+                100,
+                40,
+                50,
+                0,
+                1,
+                new Attack(AttackTypes.PHYSICAL, 30),
+                new Attack(AttackTypes.TRUE, 80),
+                true,
+                0
+        );
 
         this.label = new UnitLabel(this, "src/icons/knight.png", setBackgroundColor(side));
     }
@@ -39,6 +48,45 @@ public class Knight implements Unit {
         }
         return backgroundColor;
     }
+
+
+    @Override
+    public void performBasicAttack(Engine engine, UnitDatabase unitDatabase) {
+        int damage = engine.calculateBasicAttackDamage(
+                this, target, statistics.getBasicAttack().getAttackType());
+
+        target.getStatistics().setHp(target.getStatistics().getHp() - damage);
+        this.statistics.setMana(statistics.getMana() + 40);
+
+        addDamageLabelToTarget(
+                target,
+                statistics.getBasicAttack().getAttackType(),
+                damage,
+                engine.getAnimationTimer());
+    }
+
+    @Override
+    public void performSpecialAttack(Engine engine, UnitDatabase unitDatabase) {
+        int damage = engine.calculateSpecialAttackDamage(
+                this, target, statistics.getSpecialAttack().getAttackType());
+        target.getStatistics().setHp(target.getStatistics().getHp() - damage);
+        this.statistics.setMana(0);
+        label.getManaBarLabel().updateManaBar();
+
+        addDamageLabelToTarget(
+                target,
+                statistics.getSpecialAttack().getAttackType(),
+                damage,
+                engine.getAnimationTimer()
+        );
+    }
+
+    public void addDamageLabelToTarget(Unit target, AttackTypes attackType, int damage, Timer animationTimer) {
+        DamageLabel damageLabel = new DamageLabel(target, attackType, damage);
+
+        target.getUnitLabel().addDamageLabel(damageLabel, animationTimer);
+    }
+
 
     @Override
     public Side getSide() {
@@ -61,32 +109,17 @@ public class Knight implements Unit {
     }
 
     @Override
-    public int getMaxHp() {
-        return maxHp;
-    }
-
-    @Override
-    public int getHp() {
-        return hp;
-    }
-
-    @Override
-    public int getAttack() {
-        return attack;
-    }
-
-    @Override
-    public int getRange() {
-        return range;
-    }
-
-    @Override
     public boolean isAlive() {
         return alive;
     }
 
     @Override
-    public ObjectLabel getLabel() {
+    public Statistics getStatistics() {
+        return statistics;
+    }
+
+    @Override
+    public UnitLabel getUnitLabel() {
         return label;
     }
 
@@ -103,13 +136,9 @@ public class Knight implements Unit {
         this.target = target;
     }
 
-    @Override
-    public void setHp(int hp) {
-        this.hp = hp;
-    }
-
     public void setDead() {
         this.alive = false;
+        this.label.setVisible(false);
     }
 
     @Override
