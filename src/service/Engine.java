@@ -19,7 +19,7 @@ public class Engine {
     private final UnitDatabase unitDatabase;
     private final PrintingFieldService printingFieldService;
     private MainFrame gui;
-    private final Timer animationTimer = new Timer();
+    private final Timer timer = new Timer();
 
     public Engine(BattleField battleField,
                   ObjectPlacementService unitPlacementService,
@@ -41,20 +41,12 @@ public class Engine {
         for (int turn = 0; !simulationStopCondition(); turn++) {
             List<Unit> units = SetUnitsTurn(turn);
             setTargets(units);
-            setAllRequests(units);
+            setRequests(units);
             actionHandler.simulateTurn();
             printingFieldService.print();
-            pauseSimulation(3000);
+            pauseSimulation(1500);
         }
-        gui.repaint();
-    }
-
-    private List<Unit> SetUnitsTurn(int turn) {
-        if (turn % 2 == 0) {
-            return unitDatabase.getBlueUnits();
-        } else {
-            return unitDatabase.getRedUnits();
-        }
+        printingFieldService.print();
     }
 
     private void pauseSimulation(int duration) {
@@ -67,6 +59,14 @@ public class Engine {
 
     private boolean simulationStopCondition() {
         return unitDatabase.getBlueUnits().isEmpty() || unitDatabase.getRedUnits().isEmpty();
+    }
+
+    private List<Unit> SetUnitsTurn(int turn) {
+        if (turn % 2 == 0) {
+            return unitDatabase.getBlueUnits();
+        } else {
+            return unitDatabase.getRedUnits();
+        }
     }
 
     public void setTargets(List<Unit> units) {
@@ -96,84 +96,6 @@ public class Engine {
         return target;
     }
 
-    private void setAllRequests(List<Unit> units) {
-        for (Unit unit : units) {
-            setActionRequest(unit);
-        }
-    }
-
-    private void setActionRequest(Unit unit) {
-        double distance = countDistance(unit, unit.getTarget());
-        if (distance > unit.getStatistics().getRange()) {
-            actionHandler.setRequest(unit, setFirstDirection(unit), setSecondDirection(unit));
-        } else {
-            actionHandler.setRequest(unit, Actions.ATTACK);
-        }
-    }
-
-    private Actions setFirstDirection(Unit unit) {
-        return setFirstAndSecondDirection(unit).get(0);
-    }
-
-    private Actions setSecondDirection(Unit unit) {
-        return setFirstAndSecondDirection(unit).get(1);
-    }
-
-    private List<Actions> setFirstAndSecondDirection(Unit unit) {
-        Actions firstDirection = null;
-        Actions secondDirection = null;
-        int unitXCoordinate = unit.getXCoordinate();
-        int unitYCoordinate = unit.getYCoordinate();
-        int targetXCoordinate = unit.getTarget().getXCoordinate();
-        int targetYCoordinate = unit.getTarget().getYCoordinate();
-        int XDifference = targetXCoordinate - unitXCoordinate;
-        int YDifference = targetYCoordinate - unitYCoordinate;
-
-        boolean XDifferenceGreaterThatY = Math.abs(XDifference) > Math.abs(YDifference);
-        boolean XDifferenceGreaterOrEqualToY = Math.abs(XDifference) >= Math.abs(YDifference);
-
-
-        if (XDifference <= 0 && YDifference > 0) {
-            if (XDifferenceGreaterThatY) {
-                firstDirection = Actions.MOVE_UP;
-                secondDirection = Actions.MOVE_RIGHT;
-            } else {
-                firstDirection = Actions.MOVE_RIGHT;
-                secondDirection = Actions.MOVE_UP;
-            }
-        }
-        if (XDifference > 0 && YDifference >= 0) {
-            if (XDifferenceGreaterOrEqualToY) {
-                firstDirection = Actions.MOVE_DOWN;
-                secondDirection = Actions.MOVE_RIGHT;
-            } else {
-                firstDirection = Actions.MOVE_RIGHT;
-                secondDirection = Actions.MOVE_DOWN;
-            }
-        }
-        if (XDifference >= 0 && YDifference < 0) {
-            if (XDifferenceGreaterThatY) {
-                firstDirection = Actions.MOVE_DOWN;
-                secondDirection = Actions.MOVE_LEFT;
-            } else {
-                firstDirection = Actions.MOVE_LEFT;
-                secondDirection = Actions.MOVE_DOWN;
-            }
-        }
-        if (XDifference < 0 && YDifference <= 0) {
-            if (XDifferenceGreaterOrEqualToY) {
-                firstDirection = Actions.MOVE_UP;
-                secondDirection = Actions.MOVE_LEFT;
-            } else {
-                firstDirection = Actions.MOVE_LEFT;
-                secondDirection = Actions.MOVE_UP;
-            }
-        }
-        if (firstDirection != null) {
-            return new ArrayList<>(List.of(firstDirection, secondDirection));
-        } else throw new RuntimeException("Null pointer in setting first and second direction");
-    }
-
     private List<Unit> setUnitsToScan(Unit unit) {
         List<Unit> listOfEnemies;
         if (unit.getSide() == Side.BLUE) {
@@ -190,6 +112,97 @@ public class Engine {
 
         return Math.sqrt(
                 Math.pow(unitXCoordinate - enemyXCoordinate, 2) + Math.pow(unitYCoordinate - enemyYCoordinate, 2));
+    }
+
+    private void setRequests(List<Unit> units) {
+        for (Unit unit : units) {
+            setActionRequest(unit);
+        }
+    }
+
+    private void setActionRequest(Unit unit) {
+        if (TargetIsInRange(unit)) {
+            actionHandler.setRequest(unit, setFirstDirection(unit), setSecondDirection(unit));
+        } else {
+            actionHandler.setRequest(unit, Actions.ATTACK);
+        }
+    }
+
+    private boolean TargetIsInRange(Unit unit){
+        double distance = countDistance(unit, unit.getTarget());
+        return distance > unit.getStatistics().getRange();
+    }
+
+    private Actions setFirstDirection(Unit unit) {
+        return setFirstAndSecondDirection(unit).get(0);
+    }
+
+    private Actions setSecondDirection(Unit unit) {
+        return setFirstAndSecondDirection(unit).get(1);
+    }
+
+    private List<Actions> setFirstAndSecondDirection(Unit unit) {
+        Actions firstDirection;
+        Actions secondDirection;
+
+        int XDifference = checkXDifference(unit, unit.getTarget());
+        int YDifference = checkYDifference(unit, unit.getTarget());
+
+        boolean XDifferenceGreaterThatY = Math.abs(XDifference) > Math.abs(YDifference);
+        boolean XDifferenceGreaterOrEqualToY = Math.abs(XDifference) >= Math.abs(YDifference);
+
+
+        if (XDifference <= 0 && YDifference > 0) {
+            if (XDifferenceGreaterThatY) {
+                firstDirection = Actions.MOVE_UP;
+                secondDirection = Actions.MOVE_RIGHT;
+            } else {
+                firstDirection = Actions.MOVE_RIGHT;
+                secondDirection = Actions.MOVE_UP;
+            }
+        }
+        else if (XDifference > 0 && YDifference >= 0) {
+            if (XDifferenceGreaterOrEqualToY) {
+                firstDirection = Actions.MOVE_DOWN;
+                secondDirection = Actions.MOVE_RIGHT;
+            } else {
+                firstDirection = Actions.MOVE_RIGHT;
+                secondDirection = Actions.MOVE_DOWN;
+            }
+        }
+        else if (XDifference >= 0 && YDifference < 0) {
+            if (XDifferenceGreaterThatY) {
+                firstDirection = Actions.MOVE_DOWN;
+                secondDirection = Actions.MOVE_LEFT;
+            } else {
+                firstDirection = Actions.MOVE_LEFT;
+                secondDirection = Actions.MOVE_DOWN;
+            }
+        }
+        else {
+            if (XDifferenceGreaterOrEqualToY) {
+                firstDirection = Actions.MOVE_UP;
+                secondDirection = Actions.MOVE_LEFT;
+            } else {
+                firstDirection = Actions.MOVE_LEFT;
+                secondDirection = Actions.MOVE_UP;
+            }
+        }
+        return new ArrayList<>(List.of(firstDirection, secondDirection));
+    }
+
+    private int checkXDifference(Unit unit, Unit target) {
+        int unitXCoordinate = unit.getXCoordinate();
+        int targetXCoordinate = target.getXCoordinate();
+
+        return targetXCoordinate - unitXCoordinate;
+    }
+
+    private int checkYDifference(Unit unit, Unit target) {
+        int unitYCoordinate = unit.getYCoordinate();
+        int targetYCoordinate = target.getYCoordinate();
+
+        return  targetYCoordinate - unitYCoordinate;
     }
 
 
@@ -228,7 +241,7 @@ public class Engine {
         removeUnitIfDead(target);
 
         target.getUnitLabel().getHpBarLabel().updateHpBar();
-        target.getUnitLabel().getManaBarLabel().updateManaBar();
+        requester.getUnitLabel().getManaBarLabel().updateManaBar();
     }
 
     private void removeUnitIfDead(Unit target) {
@@ -243,25 +256,25 @@ public class Engine {
                     gui.getMainPanel().removeUnitLabel(target);
                 }
             };
-            animationTimer.schedule(task, 700);
+            timer.schedule(task, 700);
         }
     }
 
     public int calculateBasicAttackDamage(Unit attacker, Unit defender, AttackTypes attackType) {
         int attackDamageNegated
                 = (int) Math.ceil(attacker.getStatistics().getBasicAttack().getBaseDamage()
-                * calculateDamageNegationPercentage(attacker, defender, attackType));
+                * calculateDamageNegationPercentage(defender, attackType));
         return attacker.getStatistics().getBasicAttack().getBaseDamage() - attackDamageNegated;
     }
 
     public int calculateSpecialAttackDamage(Unit attacker, Unit defender, AttackTypes attackType) {
         int attackDamageNegated
                 = (int) Math.ceil(attacker.getStatistics().getSpecialAttack().getBaseDamage()
-                * calculateDamageNegationPercentage(attacker, defender, attackType));
+                * calculateDamageNegationPercentage(defender, attackType));
         return attacker.getStatistics().getSpecialAttack().getBaseDamage() - attackDamageNegated;
     }
 
-    public double calculateDamageNegationPercentage(Unit attacker, Unit defender, AttackTypes attackType) {
+    public double calculateDamageNegationPercentage(Unit defender, AttackTypes attackType) {
         int defensiveStatisticValue;
 
         if (attackType == AttackTypes.PHYSICAL) {
@@ -273,7 +286,7 @@ public class Engine {
         return (double) defensiveStatisticValue / (defensiveStatisticValue + 100);
     }
 
-    public Timer getAnimationTimer() {
-        return animationTimer;
+    public Timer getTimer() {
+        return timer;
     }
 }
