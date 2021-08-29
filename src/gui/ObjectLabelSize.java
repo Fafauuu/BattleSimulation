@@ -1,5 +1,5 @@
 package gui;
 
 public class ObjectLabelSize {
-    public static final int SIZE = 55;
+    public static final int SIZE = 100;
 }

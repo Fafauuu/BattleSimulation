@@ -5,20 +5,11 @@ import model.SimulationObject;
 import model.StaticSimulationObject;
 import model.Unit;
 
-import java.util.List;
-
 public class ObjectPlacementServiceImpl implements ObjectPlacementService {
     private final BattleField battleField;
 
     public ObjectPlacementServiceImpl(BattleField battleField) {
         this.battleField = battleField;
-    }
-
-    @Override
-    public void placeAllUnits(List<Unit> units) {
-        for (Unit unit : units) {
-            placeUnit(unit);
-        }
     }
 
     @Override

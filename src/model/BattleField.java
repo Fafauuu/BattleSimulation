@@ -5,6 +5,7 @@ import exceptions.NoSuchObjectException;
 import exceptions.ObjectOutOfFieldException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,9 +39,6 @@ public class BattleField {
         if (xCoordinate >= fieldSize || xCoordinate < 0 || yCoordinate >= fieldSize || yCoordinate < 0){
             throw new ObjectOutOfFieldException(tree + "placed out of field");
         }
-        if (!(battleField.get(xCoordinate).get(yCoordinate) instanceof Passable)){
-            throw new CantStackObjectsException(tree + "tried to stack");
-        }
         battleField.get(xCoordinate).add(yCoordinate, tree);
         staticSimulationObjects.add(0,tree);
     }
@@ -62,13 +60,12 @@ public class BattleField {
         if (x < fieldSize && y < fieldSize) {
             battleField.get(x).set(y, staticSimulationObject);
         }
-        else throw new ObjectOutOfFieldException(
-                "Static object: " + staticSimulationObject.toString() + "placed out of field");
+        else throw new ObjectOutOfFieldException("Static object: " + staticSimulationObject.toString() + "placed out of field");
     }
 
     public void setSingleFieldWithUnit(int x, int y, Unit unit){
         if (x < fieldSize && y < fieldSize){
-            if (battleField.get(x).get(y) instanceof Passable) {
+            if (battleField.get(x).get(y) instanceof Coverable) {
                 battleField.get(x).set(y, unit);
             }
             else throw new CantStackObjectsException(unit.toString() + "tried to stack");

@@ -1,31 +1,31 @@
 import model.BattleField;
+import model.Knight;
 import model.Side;
+import service.UnitDatabaseImpl;
 import service.*;
 
 public class Main {
 
     public static void main(String[] args) {
-        BattleField battleField = new BattleField(20);
+        BattleField battleField = new BattleField(5);
         UnitDatabaseImpl unitDatabase = new UnitDatabaseImpl();
         ObjectPlacementService objectPlacementService = new ObjectPlacementServiceImpl(battleField);
         PrintingFieldService printingFieldService = new PrintingFieldServiceConsoleImpl(battleField);
-        UnitFactory unitFactory = new UnitFactoryImpl(unitDatabase);
+        SimulationObjectFactory simulationObjectFactory = new SimulationObjectFactoryImpl(unitDatabase);
         Engine engine = new Engine(battleField, objectPlacementService, unitDatabase, printingFieldService);
 
+
+        Knight knight1 = simulationObjectFactory.createKnight(Side.BLUE, 2, 0);
+        Knight knight2 = simulationObjectFactory.createKnight(Side.BLUE, 2, 2);
+//        Knight knight3 = simulationObjectFactory.createKnight(Side.RED, 4, 3);
+        Knight knight4 = simulationObjectFactory.createKnight(Side.RED, 2, 1);
         battleField.plantTree(1,1);
-        battleField.plantTree(3,16);
-        battleField.plantTree(4,12);
-        battleField.plantTree(4,9);
-        battleField.plantTree(3,5);
-        battleField.plantTree(8,6);
-        battleField.plantTree(13,2);
-        battleField.plantTree(14,16);
-        battleField.plantTree(16,8);
-
-        unitFactory.createKnightsFormation(Side.BLUE,0,2,6,14);
-        unitFactory.createKnightsFormation(Side.RED,17,19,4,12);
-        objectPlacementService.placeAllUnits(unitDatabase.getAllUnits());
-
+        battleField.plantTree(3,2);
+        objectPlacementService.placeUnit(knight1);
+//        objectPlacementService.placeUnit(knight2);
+//        objectPlacementService.placeUnit(knight3);
+        objectPlacementService.placeUnit(knight4);
+        printingFieldService.print();
         engine.simulateBattle();
     }
 }

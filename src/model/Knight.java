@@ -62,8 +62,7 @@ public class Knight implements Unit {
                 target,
                 statistics.getBasicAttack().getAttackType(),
                 damage,
-                engine.getTimer()
-        );
+                engine.getAnimationTimer());
     }
 
     @Override
@@ -78,7 +77,7 @@ public class Knight implements Unit {
                 target,
                 statistics.getSpecialAttack().getAttackType(),
                 damage,
-                engine.getTimer()
+                engine.getAnimationTimer()
         );
     }
 

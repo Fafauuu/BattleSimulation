@@ -4,7 +4,7 @@ import gui.ObjectLabel;
 
 import java.awt.*;
 
-public class Grass implements StaticSimulationObject, Passable {
+public class Grass implements StaticSimulationObject, Passable, Coverable {
     private final int XCoordinate;
     private final int YCoordinate;
     private final ObjectLabel label;
