@@ -1,12 +1,12 @@
 package model;
 
-import gui.DamageLabel;
+import animations.Animation;
+import animations.KnightBasicAttackAnimation;
 import gui.UnitLabel;
 import service.Engine;
 import service.UnitDatabase;
 
 import java.awt.*;
-import java.util.Timer;
 
 public class Knight implements Unit {
     private final Side side;
@@ -42,49 +42,46 @@ public class Knight implements Unit {
     private Color setBackgroundColor(Side side) {
         Color backgroundColor;
         if (side == Side.RED) {
-            backgroundColor = Color.RED;
+            backgroundColor = new Color(0xFF7C7C);
         } else {
-            backgroundColor = Color.CYAN;
+            backgroundColor = new Color(0xA0C3EA);
         }
         return backgroundColor;
     }
 
 
     @Override
-    public void performBasicAttack(Engine engine, UnitDatabase unitDatabase) {
+    public Animation performBasicAttack(Engine engine, UnitDatabase unitDatabase) {
         int damage = engine.calculateBasicAttackDamage(
                 this, target, statistics.getBasicAttack().getAttackType());
 
         target.getStatistics().setHp(target.getStatistics().getHp() - damage);
         this.statistics.setMana(statistics.getMana() + 40);
 
-        addDamageLabelToTarget(
+        engine.addDamageLabelToTarget(
                 target,
                 statistics.getBasicAttack().getAttackType(),
-                damage,
-                engine.getAnimationTimer());
+                damage
+        );
+        engine.updateFieldAfterAttack(this, target);
+        return new KnightBasicAttackAnimation(this, target);
     }
 
     @Override
-    public void performSpecialAttack(Engine engine, UnitDatabase unitDatabase) {
+    public Animation performSpecialAttack(Engine engine, UnitDatabase unitDatabase) {
         int damage = engine.calculateSpecialAttackDamage(
                 this, target, statistics.getSpecialAttack().getAttackType());
         target.getStatistics().setHp(target.getStatistics().getHp() - damage);
         this.statistics.setMana(0);
         label.getManaBarLabel().updateManaBar();
 
-        addDamageLabelToTarget(
+        engine.addDamageLabelToTarget(
                 target,
                 statistics.getSpecialAttack().getAttackType(),
-                damage,
-                engine.getAnimationTimer()
+                damage
         );
-    }
-
-    public void addDamageLabelToTarget(Unit target, AttackTypes attackType, int damage, Timer animationTimer) {
-        DamageLabel damageLabel = new DamageLabel(target, attackType, damage);
-
-        target.getUnitLabel().addDamageLabel(damageLabel, animationTimer);
+        engine.updateFieldAfterAttack(this, target);
+        return new KnightBasicAttackAnimation(this, target);
     }
 
 

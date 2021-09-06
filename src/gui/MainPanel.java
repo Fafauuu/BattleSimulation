@@ -23,10 +23,10 @@ public class MainPanel extends JPanel {
         this.unitDatabase = unitDatabase;
         panelSize = battleField.getFieldSize() * ObjectLabelSize.SIZE;
 
-        addStaticObjectLabels();
-        addStaticObjectLabelsToPanel();
         addUnitLabels();
         addUnitLabelsToPanel();
+        addStaticObjectLabels();
+        addStaticObjectLabelsToPanel();
 
         this.setLayout(null);
         this.setBounds(0, 0, panelSize, panelSize);
@@ -66,6 +66,7 @@ public class MainPanel extends JPanel {
             this.add(unitLabel);
             unitLabel.setVisible(true);
         }
+        this.repaint();
     }
 
     public void repaintUnit(Unit unit) {
@@ -74,7 +75,6 @@ public class MainPanel extends JPanel {
                 unitLabel.setBounds(unitLabel.getLabeledObject().getYCoordinate() * ObjectLabelSize.SIZE,
                         unitLabel.getLabeledObject().getXCoordinate() * ObjectLabelSize.SIZE,
                         ObjectLabelSize.SIZE, ObjectLabelSize.SIZE);
-//                unitLabel.repaint();
             }
         }
     }
@@ -85,22 +85,5 @@ public class MainPanel extends JPanel {
 
     public int getPanelSize() {
         return panelSize;
-    }
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-
-        repaintUnits();
-    }
-
-    public void repaintUnits() {
-        List<Unit> listOfUnits = unitDatabase.getAllUnits();
-        for (Unit unit : listOfUnits) {
-            unit.getUnitLabel().setBounds(unit.getYCoordinate() * ObjectLabelSize.SIZE,
-                    unit.getXCoordinate() * ObjectLabelSize.SIZE,
-                    ObjectLabelSize.SIZE, ObjectLabelSize.SIZE);
-            unit.getUnitLabel().repaint();
-        }
     }
 }

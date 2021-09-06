@@ -1,13 +1,13 @@
 package model;
 
-import gui.DamageLabel;
+import animations.Animation;
 import gui.UnitLabel;
 import service.Engine;
 import service.UnitDatabase;
 
 public interface Unit extends SimulationObject{
-    void performBasicAttack(Engine engine, UnitDatabase unitDatabase);
-    void performSpecialAttack(Engine engine, UnitDatabase unitDatabase);
+    Animation performBasicAttack(Engine engine, UnitDatabase unitDatabase);
+    Animation performSpecialAttack(Engine engine, UnitDatabase unitDatabase);
 
     Side getSide();
     Unit getTarget();
