@@ -1,7 +1,7 @@
-package gui;
+package gui.panels;
 
 import model.AttackTypes;
-import model.Unit;
+import model.objects.Unit;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,10 +35,10 @@ public class DamageLabel extends JLabel {
     public void setDamageLabelBounds(int labelIndex) {
         int shiftModifier = 0;
         if (labelIndex != 0){
-            shiftModifier = labelIndex * 10;
+            shiftModifier = labelIndex * 5;
         }
-        int xShift = getRandomNumber(0,shiftModifier);
-        int yShift = getRandomNumber(0,shiftModifier);
+        int xShift = shiftModifier;
+        int yShift = shiftModifier;
         int width = 50;
         int height = 30;
 

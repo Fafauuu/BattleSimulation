@@ -1,6 +1,7 @@
 package animations;
 
-import model.Unit;
+import gui.labels.ObjectLabelSize;
+import model.objects.Unit;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +13,6 @@ public abstract class Animation {
     protected Unit attacker;
     protected Unit target;
     protected BufferedImage image;
-    protected int imageSize;
     protected int XCoordinate;
     protected int YCoordinate;
     protected boolean stopAnimation;
@@ -21,6 +21,8 @@ public abstract class Animation {
     public Animation(Unit attacker, Unit target) {
         this.attacker = attacker;
         this.target = target;
+        this.XCoordinate = attacker.getYCoordinate() * ObjectLabelSize.SIZE;
+        this.YCoordinate = attacker.getXCoordinate() * ObjectLabelSize.SIZE;
         this.stopAnimation = false;
         setAnimationDirection();
     }

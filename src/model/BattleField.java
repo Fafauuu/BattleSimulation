@@ -3,6 +3,7 @@ package model;
 import exceptions.CantStackObjectsException;
 import exceptions.NoSuchObjectException;
 import exceptions.ObjectOutOfFieldException;
+import model.objects.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

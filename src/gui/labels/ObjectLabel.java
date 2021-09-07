@@ -1,6 +1,6 @@
-package gui;
+package gui.labels;
 
-import model.SimulationObject;
+import model.objects.SimulationObject;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -20,7 +20,6 @@ public class ObjectLabel extends JLabel {
         ImageIcon icon = new ImageIcon(new ImageIcon(iconPath).getImage().
                 getScaledInstance(ObjectLabelSize.SIZE, ObjectLabelSize.SIZE, Image.SCALE_DEFAULT));
         this.setIcon(icon);
-//        this.setText(labeledObject.toString());
         this.setLayout(null);
     }
 

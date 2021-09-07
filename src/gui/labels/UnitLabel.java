@@ -1,7 +1,9 @@
-package gui;
+package gui.labels;
 
-import model.SimulationObject;
-import model.Unit;
+import gui.panels.DamageLabel;
+import gui.panels.DamageLayeredPane;
+import model.objects.SimulationObject;
+import model.objects.Unit;
 
 import java.awt.*;
 import java.util.Timer;

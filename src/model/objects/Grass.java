@@ -1,6 +1,7 @@
-package model;
+package model.objects;
 
-import gui.ObjectLabel;
+import gui.labels.ObjectLabel;
+import model.Passable;
 
 import java.awt.*;
 

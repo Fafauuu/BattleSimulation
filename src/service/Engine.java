@@ -4,9 +4,10 @@ import animations.Animation;
 import exceptions.CantMoveObjectException;
 import exceptions.CantStackObjectsException;
 import exceptions.ObjectOutOfFieldException;
-import gui.DamageLabel;
-import gui.MainFrame;
+import gui.panels.DamageLabel;
+import gui.frames.MainFrame;
 import model.*;
+import model.objects.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +15,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Engine {
-
     private final ActionHandler actionHandler;
     private final BattleField battleField;
     private final ObjectPlacementService objectPlacementService;
     private final UnitDatabase unitDatabase;
     private final PrintingFieldService printingFieldService;
+    private final DamageCalculationService damageCalculationService;
     private MainFrame gui;
     private final Timer timer = new Timer();
 
@@ -33,6 +34,7 @@ public class Engine {
         this.objectPlacementService = unitPlacementService;
         this.unitDatabase = unitDatabase;
         this.printingFieldService = printingFieldService;
+        this.damageCalculationService = new DamageCalculationServiceImpl();
     }
 
     public void simulateBattle() {
@@ -41,12 +43,15 @@ public class Engine {
         gui.setVisible(true);
         pauseSimulation(1000);
         for (int turn = 0; !simulationStopCondition(); turn++) {
-            List<Unit> units = SetUnitsTurn(turn);
+            List<Unit> units = setUnitsTurn(turn);
             setTargets(units);
             setRequests(units);
             actionHandler.simulateTurn();
             printingFieldService.print();
+//            gui.getAnimationPanel().clearAnimationList();
+            gui.getAnimationPanel().getTimer().start();
             pauseSimulation(1500);
+            gui.getAnimationPanel().getTimer().stop();
         }
         printingFieldService.print();
     }
@@ -63,7 +68,7 @@ public class Engine {
         return unitDatabase.getBlueUnits().isEmpty() || unitDatabase.getRedUnits().isEmpty();
     }
 
-    private List<Unit> SetUnitsTurn(int turn) {
+    private List<Unit> setUnitsTurn(int turn) {
         if (turn % 2 == 0) {
             return unitDatabase.getBlueUnits();
         } else {
@@ -123,16 +128,21 @@ public class Engine {
     }
 
     private void setActionRequest(Unit unit) {
-        if (TargetIsInRange(unit)) {
+        if (targetIsInRange(unit)) {
             actionHandler.setRequest(unit, setFirstDirection(unit), setSecondDirection(unit));
         } else {
             actionHandler.setRequest(unit, Actions.ATTACK);
         }
     }
 
-    private boolean TargetIsInRange(Unit unit){
+    private boolean targetIsInRange(Unit unit){
         double distance = countDistance(unit, unit.getTarget());
-        return distance > unit.getStatistics().getRange();
+
+        if (unit.getStatistics().getMana() < unit.getStatistics().getMaxMana()){
+            return distance > unit.getStatistics().getBasicAttack().getRange();
+        } else {
+            return distance > unit.getStatistics().getSpecialAttack().getRange();
+        }
     }
 
     private Actions setFirstDirection(Unit unit) {
@@ -270,33 +280,7 @@ public class Engine {
         }
     }
 
-    public int calculateBasicAttackDamage(Unit attacker, Unit defender, AttackTypes attackType) {
-        int attackDamageNegated
-                = (int) Math.ceil(attacker.getStatistics().getBasicAttack().getBaseDamage()
-                * calculateDamageNegationPercentage(defender, attackType));
-        return attacker.getStatistics().getBasicAttack().getBaseDamage() - attackDamageNegated;
-    }
-
-    public int calculateSpecialAttackDamage(Unit attacker, Unit defender, AttackTypes attackType) {
-        int attackDamageNegated
-                = (int) Math.ceil(attacker.getStatistics().getSpecialAttack().getBaseDamage()
-                * calculateDamageNegationPercentage(defender, attackType));
-        return attacker.getStatistics().getSpecialAttack().getBaseDamage() - attackDamageNegated;
-    }
-
-    public double calculateDamageNegationPercentage(Unit defender, AttackTypes attackType) {
-        int defensiveStatisticValue;
-
-        if (attackType == AttackTypes.PHYSICAL) {
-            defensiveStatisticValue = defender.getStatistics().getArmour();
-        } else if (attackType == AttackTypes.MAGICAL) {
-            defensiveStatisticValue = defender.getStatistics().getMagicResist();
-        } else defensiveStatisticValue = 0;
-
-        return (double) defensiveStatisticValue / (defensiveStatisticValue + 100);
-    }
-
-    public Timer getTimer() {
-        return timer;
+    public DamageCalculationService getDamageCalculationService() {
+        return damageCalculationService;
     }
 }

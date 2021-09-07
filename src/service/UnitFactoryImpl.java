@@ -1,6 +1,7 @@
 package service;
 
-import model.Knight;
+import model.objects.units.Axeman;
+import model.objects.units.Knight;
 import model.Side;
 
 public class UnitFactoryImpl implements UnitFactory {
@@ -39,6 +40,38 @@ public class UnitFactoryImpl implements UnitFactory {
         }
         if (side == Side.RED) {
             unitDatabase.addRedUnit(knight);
+        }
+    }
+
+    @Override
+    public void createAxemanFormation(Side side, int startingX, int finalX, int startingY, int finalY) {
+        if (finalX < startingX) {
+            int buff = startingX;
+            startingX = finalX;
+            finalX = buff;
+        }
+
+        if (finalY < startingY) {
+            int buff = startingY;
+            startingY = finalY;
+            finalY = buff;
+        }
+
+        for (int x = startingX; x <= finalX; x++) {
+            for (int y = startingY; y <= finalY; y++) {
+                createAxeman(side, x, y);
+            }
+        }
+    }
+
+    @Override
+    public void createAxeman(Side side, int XCoordinate, int YCoordinate) {
+        Axeman axeman = new Axeman(side, XCoordinate, YCoordinate);
+        if (side == Side.BLUE) {
+            unitDatabase.addBlueUnit(axeman);
+        }
+        if (side == Side.RED) {
+            unitDatabase.addRedUnit(axeman);
         }
     }
 }

@@ -1,4 +1,6 @@
-package gui;
+package gui.panels;
+
+import gui.labels.ObjectLabelSize;
 
 import javax.swing.*;
 import java.util.ArrayList;

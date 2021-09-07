@@ -1,4 +1,4 @@
-package gui;
+package gui.panels;
 
 import animations.Animation;
 import model.BattleField;
@@ -22,20 +22,19 @@ public class AnimationPanel extends JPanel implements ActionListener {
         this.battleField = battleField;
         this.unitDatabase = unitDatabase;
         this.animationList = new ArrayList<>();
-        this.timer = new Timer(10,this);
-        timer.start();
+        this.timer = new Timer(10, this);
 
         this.setLayout(null);
         this.setBackground(Color.BLACK);
         this.setOpaque(false);
     }
 
-    public void addAnimation(Animation animation){
+    public void addAnimation(Animation animation) {
         animationList.add(animation);
     }
 
     @Override
-    public void paint(Graphics g){
+    public void paint(Graphics g) {
         super.paint(g);
 
         for (Animation animation : animationList) {
@@ -46,10 +45,11 @@ public class AnimationPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         for (Animation animation : animationList) {
-            if (!animation.isStopAnimation()){
+            if (!animation.isStopAnimation()) {
                 animation.updateAnimation();
             }
         }
+
         dropFulfilledAnimations();
         repaint();
     }
@@ -57,4 +57,12 @@ public class AnimationPanel extends JPanel implements ActionListener {
     public void dropFulfilledAnimations() {
         animationList.removeIf(animation -> animation.isStopAnimation());
     }
+
+    public Timer getTimer() {
+        return timer;
+    }
+
+    //    public void clearAnimationList(){
+//        this.animationList.clear();
+//    }
 }

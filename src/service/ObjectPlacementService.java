@@ -1,8 +1,8 @@
 package service;
 
-import model.SimulationObject;
-import model.StaticSimulationObject;
-import model.Unit;
+import model.objects.SimulationObject;
+import model.objects.StaticSimulationObject;
+import model.objects.Unit;
 
 import java.util.List;
 

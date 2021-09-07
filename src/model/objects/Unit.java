@@ -1,7 +1,9 @@
-package model;
+package model.objects;
 
 import animations.Animation;
-import gui.UnitLabel;
+import gui.labels.UnitLabel;
+import model.Side;
+import model.Statistics;
 import service.Engine;
 import service.UnitDatabase;
 

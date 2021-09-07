@@ -2,14 +2,15 @@ package animations;
 
 import gui.labels.ObjectLabelSize;
 import model.objects.Unit;
+import model.objects.units.Axeman;
 
 import javax.swing.*;
 
-public class KnightBasicAttackAnimation extends Animation {
+public class AxemanBasicAttackAnimation extends Animation {
 
-    public KnightBasicAttackAnimation(Unit attacker, Unit target) {
+    public AxemanBasicAttackAnimation(Unit attacker, Unit target) {
         super(attacker, target);
-        ImageIcon imageIcon = new ImageIcon("src/icons/knightBasicAnimation.png");
+        ImageIcon imageIcon = new ImageIcon("src/icons/axemanBasicAnimation.png");
         this.image = imageIconToBufferedImage(imageIcon);
         this.image = resize(image, ObjectLabelSize.SIZE, ObjectLabelSize.SIZE);
     }

@@ -1,15 +1,17 @@
-package gui;
+package gui.panels;
 
+import gui.labels.ObjectLabel;
+import gui.labels.ObjectLabelSize;
+import gui.labels.UnitLabel;
 import model.BattleField;
-import model.StaticSimulationObject;
-import model.Unit;
+import model.objects.StaticSimulationObject;
+import model.objects.Unit;
 import service.UnitDatabase;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
 
 public class MainPanel extends JPanel {
     private final BattleField battleField;

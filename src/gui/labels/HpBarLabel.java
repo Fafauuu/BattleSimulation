@@ -1,6 +1,6 @@
-package gui;
+package gui.labels;
 
-import model.Unit;
+import model.objects.Unit;
 
 import javax.swing.*;
 import java.awt.*;

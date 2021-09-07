@@ -5,11 +5,13 @@ import model.objects.Unit;
 
 import javax.swing.*;
 
-public class KnightBasicAttackAnimation extends Animation {
+public class KnightSpecialAttackAnimation extends Animation {
 
-    public KnightBasicAttackAnimation(Unit attacker, Unit target) {
+    public KnightSpecialAttackAnimation(Unit attacker, Unit target) {
         super(attacker, target);
-        ImageIcon imageIcon = new ImageIcon("src/icons/knightBasicAnimation.png");
+        this.XCoordinate = attacker.getYCoordinate() * ObjectLabelSize.SIZE;
+        this.YCoordinate = attacker.getXCoordinate() * ObjectLabelSize.SIZE;
+        ImageIcon imageIcon = new ImageIcon("src/icons/knightSpecialAnimation.png");
         this.image = imageIconToBufferedImage(imageIcon);
         this.image = resize(image, ObjectLabelSize.SIZE, ObjectLabelSize.SIZE);
     }

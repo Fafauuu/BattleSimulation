@@ -1,5 +1,7 @@
-package gui;
+package gui.frames;
 
+import gui.panels.AnimationPanel;
+import gui.panels.MainPanel;
 import model.BattleField;
 import service.UnitDatabase;
 

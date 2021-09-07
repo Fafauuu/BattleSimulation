@@ -1,5 +1,7 @@
 package model;
 
+import model.objects.Unit;
+
 public class Request {
     private final Unit requester;
     private int fulfilAttempts;

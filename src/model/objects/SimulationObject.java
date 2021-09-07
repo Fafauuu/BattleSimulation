@@ -1,6 +1,4 @@
-package model;
-
-import gui.ObjectLabel;
+package model.objects;
 
 public interface SimulationObject {
     int getXCoordinate();

@@ -12,11 +12,14 @@ public class Main {
         UnitFactory unitFactory = new UnitFactoryImpl(unitDatabase);
         Engine engine = new Engine(battleField, objectPlacementService, unitDatabase, printingFieldService);
 
-        battleField.plantTree(1,4);
+        battleField.plantTree(2,4);
 
-        unitFactory.createKnightsFormation(Side.BLUE,0,0,0,0);
-        unitFactory.createKnightsFormation(Side.RED,1,1,0,0);
-        unitFactory.createKnightsFormation(Side.RED,0,0,1,1);
+        unitFactory.createKnight(Side.BLUE,0,0);
+        unitFactory.createKnight(Side.RED,1,0);
+        unitFactory.createKnight(Side.RED,0,1);
+
+        unitFactory.createKnightsFormation(Side.BLUE, 4,4,0,2);
+        unitFactory.createAxeman(Side.RED, 5, 1);
 
         objectPlacementService.placeAllUnits(unitDatabase.getAllUnits());
 
