@@ -9,11 +9,10 @@ public class Statistics {
     private final int magicResist;
     private final Attack basicAttack;
     private final Attack specialAttack;
-    private boolean melee;
     private int ammunition;
 
     public Statistics(int maxHp, int maxMana, int mana, int armour, int magicResist,
-                      Attack basicAttack, Attack specialAttack, boolean melee, int ammunition) {
+                      Attack basicAttack, Attack specialAttack, int ammunition) {
         this.maxHp = maxHp;
         this.hp = maxHp;
         this.maxMana = maxMana;
@@ -22,7 +21,6 @@ public class Statistics {
         this.magicResist = magicResist;
         this.basicAttack = basicAttack;
         this.specialAttack = specialAttack;
-        this.melee = melee;
         this.ammunition = ammunition;
     }
 
@@ -58,12 +56,12 @@ public class Statistics {
         return specialAttack;
     }
 
-    public boolean isMelee() {
-        return melee;
-    }
-
     public int getAmmunition() {
         return ammunition;
+    }
+
+    public void reduceAmmunition(int number) {
+        this.ammunition -= number;
     }
 
     public void setHp(int hp) {
@@ -72,9 +70,5 @@ public class Statistics {
 
     public void setMana(int mana) {
         this.mana = mana;
-    }
-
-    public void setMelee(boolean melee) {
-        this.melee = melee;
     }
 }

@@ -3,7 +3,6 @@ package model.objects.units;
 import gui.labels.UnitLabel;
 import model.Side;
 import model.Statistics;
-import model.objects.Unit;
 
 import java.awt.*;
 

@@ -12,7 +12,7 @@ public class Tree implements StaticSimulationObject {
     public Tree(int XCoordinate, int YCoordinate) {
         this.XCoordinate = XCoordinate;
         this.YCoordinate = YCoordinate;
-        this.label = new ObjectLabel(this, "src/icons/tree.png", Color.GREEN);
+        this.label = new ObjectLabel(this, "src/graphics/icons/treeIcon.png", Color.GREEN);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class Tree implements StaticSimulationObject {
 
     @Override
     public String toString() {
-        return "Tree[" + XCoordinate + "," + YCoordinate + "] ";
+        return "[" + XCoordinate + "," + YCoordinate + "] Tree";
     }
 }
 

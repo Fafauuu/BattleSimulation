@@ -2,7 +2,7 @@ package service;
 
 import model.Attack;
 import model.AttackTypes;
-import model.objects.Unit;
+import model.objects.units.Unit;
 
 public class DamageCalculationServiceImpl implements DamageCalculationService{
 

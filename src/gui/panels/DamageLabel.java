@@ -1,7 +1,7 @@
 package gui.panels;
 
 import model.AttackTypes;
-import model.objects.Unit;
+import model.objects.units.Unit;
 
 import javax.swing.*;
 import java.awt.*;

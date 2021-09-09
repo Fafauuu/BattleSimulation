@@ -1,7 +1,7 @@
 package service;
 
 import model.Side;
-import model.objects.Unit;
+import model.objects.units.Unit;
 
 import java.util.ArrayList;
 import java.util.List;

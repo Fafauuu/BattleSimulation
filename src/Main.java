@@ -12,45 +12,32 @@ public class Main {
         UnitFactory unitFactory = new UnitFactoryImpl(unitDatabase);
         Engine engine = new Engine(battleField, objectPlacementService, unitDatabase, printingFieldService);
 
+        battleField.plantTree(6,3);
         battleField.plantTree(2,4);
+        battleField.plantTree(2,1);
+        battleField.plantTree(4,6);
+        battleField.plantTree(7,9);
+        battleField.plantTree(7,8);
+        battleField.plantTree(7,7);
 
-        unitFactory.createKnight(Side.BLUE,0,0);
-        unitFactory.createKnight(Side.RED,1,0);
-        unitFactory.createKnight(Side.RED,0,1);
+        unitFactory.createKnightsFormation(Side.BLUE, 1,1,2,7);
+        unitFactory.createArcherFormation(Side.BLUE,0,0,3,5);
+        unitFactory.createAxeman(Side.BLUE,1,0);
+        unitFactory.createAxeman(Side.BLUE,2,0);
+        unitFactory.createCavalry(Side.BLUE,1,8);
+        unitFactory.createCavalry(Side.BLUE,1,9);
+        unitFactory.createMage(Side.BLUE,0,6);
+        unitFactory.createMage(Side.BLUE,0,7);
 
-        unitFactory.createKnightsFormation(Side.BLUE, 4,4,0,2);
-        unitFactory.createAxeman(Side.RED, 5, 1);
+        unitFactory.createKnightsFormation(Side.RED, 8,8,0,2);
+        unitFactory.createKnightsFormation(Side.RED, 8,8,6,6);
+        unitFactory.createArcherFormation(Side.RED,9,9,6,8);
+        unitFactory.createCavalryFormation(Side.RED,8,8,3,5);
+        unitFactory.createAxemanFormation(Side.RED, 9,9,4,5);
+        unitFactory.createMageFormation(Side.RED,9,9,2,3);
 
         objectPlacementService.placeAllUnits(unitDatabase.getAllUnits());
 
         engine.simulateBattle();
-
-//        JFrame jFrame = new JFrame();
-//        jFrame.setBounds(0,0,1000,1000);
-//        jFrame.setVisible(true);
-//        jFrame.setLayout(null);
-//
-//        JPanel jPanel1 = new JPanel();
-//        jPanel1.setBackground(Color.RED);
-//        jPanel1.setBounds(0,0,600,600);
-//
-//        JPanel jPanel2 = new JPanel();
-//        jPanel2.setBounds(100,100,400,400);
-//        jPanel2.setBackground(Color.BLUE);
-//        jPanel2.setOpaque(false);
-//
-//
-//        ObjectLabel objectLabel = new ObjectLabel(battleField.getStaticSimulationObjectWithXAndY(1,1), "src/icons/grass.png", Color.GREEN);
-//        jPanel2.add(objectLabel);
-//
-////        JLabel jLabel = new JLabel();
-////        jLabel.setIcon(new ImageIcon("src/icons/knight.png"));
-////        jLabel.setBounds(0,0,50,50);
-////        jPanel2.add(jLabel);
-////        jLabel.setVisible(true);
-//
-//        jFrame.add(jPanel2);
-//        jFrame.add(jPanel1);
-
     }
 }

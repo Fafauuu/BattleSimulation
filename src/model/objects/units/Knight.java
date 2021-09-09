@@ -9,7 +9,6 @@ import model.AttackTypes;
 import model.Side;
 import model.Statistics;
 import service.Engine;
-import service.UnitDatabase;
 
 public class Knight extends AUnit {
 
@@ -27,47 +26,38 @@ public class Knight extends AUnit {
                 20,
                 new Attack(AttackTypes.PHYSICAL, 30, 1),
                 new Attack(AttackTypes.MAGICAL, 60, 1),
-                true,
                 0
         );
 
-        this.label = new UnitLabel(this, "src/icons/knight.png", setBackgroundColor(side));
+        this.label = new UnitLabel(this, "src/graphics/icons/knightIcon.png", setBackgroundColor(side));
     }
 
 
     @Override
-    public Animation performBasicAttack(Engine engine, UnitDatabase unitDatabase) {
+    public Animation performBasicAttack(Engine engine) {
         int damage = engine.getDamageCalculationService().calculate(this, target, statistics.getBasicAttack());
         target.getStatistics().setHp(target.getStatistics().getHp() - damage);
         this.statistics.setMana(statistics.getMana() + 40);
 
-        engine.addDamageLabelToTarget(
-                target,
-                statistics.getBasicAttack().getAttackType(),
-                damage
-        );
+        engine.addDamageLabelToTarget(target, statistics.getBasicAttack().getAttackType(), damage);
         engine.updateFieldAfterAttack(this, target);
         return new KnightBasicAttackAnimation(this, target);
     }
 
     @Override
-    public Animation performSpecialAttack(Engine engine, UnitDatabase unitDatabase) {
+    public Animation performSpecialAttack(Engine engine) {
         int damage = engine.getDamageCalculationService().calculate(this, target, statistics.getSpecialAttack());
         target.getStatistics().setHp(target.getStatistics().getHp() - damage);
         this.statistics.setMana(0);
         label.getManaBarLabel().updateManaBar();
 
-        engine.addDamageLabelToTarget(
-                target,
-                statistics.getSpecialAttack().getAttackType(),
-                damage
-        );
+        engine.addDamageLabelToTarget(target, statistics.getSpecialAttack().getAttackType(), damage);
         engine.updateFieldAfterAttack(this, target);
         return new KnightSpecialAttackAnimation(this, target);
     }
 
     @Override
     public String toString() {
-        return side.toString().charAt(0) + "_Knight[" + XCoordinate + "," + YCoordinate + "] ";
+        return "[" + XCoordinate + "," + YCoordinate + "] " + side.toString().charAt(0) + "_Knight";
     }
 }

@@ -13,7 +13,7 @@ public class Grass implements StaticSimulationObject, Passable {
     public Grass(int XCoordinate, int YCoordinate) {
         this.XCoordinate = XCoordinate;
         this.YCoordinate = YCoordinate;
-        this.label = new ObjectLabel(this, "src/icons/grass.png", Color.GREEN);
+        this.label = new ObjectLabel(this, "src/graphics/icons/grassIcon.png", Color.GREEN);
     }
 
     @Override
@@ -33,6 +33,6 @@ public class Grass implements StaticSimulationObject, Passable {
 
     @Override
     public String toString() {
-        return "Grass[" + XCoordinate + "," + YCoordinate + "] ";
+        return "[" + XCoordinate + "," + YCoordinate + "] Grass";
     }
 }

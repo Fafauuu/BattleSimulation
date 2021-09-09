@@ -61,8 +61,4 @@ public class AnimationPanel extends JPanel implements ActionListener {
     public Timer getTimer() {
         return timer;
     }
-
-    //    public void clearAnimationList(){
-//        this.animationList.clear();
-//    }
 }

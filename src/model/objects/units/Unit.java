@@ -1,15 +1,15 @@
-package model.objects;
+package model.objects.units;
 
 import animations.Animation;
 import gui.labels.UnitLabel;
 import model.Side;
 import model.Statistics;
+import model.objects.SimulationObject;
 import service.Engine;
-import service.UnitDatabase;
 
-public interface Unit extends SimulationObject{
-    Animation performBasicAttack(Engine engine, UnitDatabase unitDatabase);
-    Animation performSpecialAttack(Engine engine, UnitDatabase unitDatabase);
+public interface Unit extends SimulationObject {
+    Animation performBasicAttack(Engine engine);
+    Animation performSpecialAttack(Engine engine);
 
     Side getSide();
     Unit getTarget();

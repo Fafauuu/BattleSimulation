@@ -3,7 +3,7 @@ package gui.labels;
 import gui.panels.DamageLabel;
 import gui.panels.DamageLayeredPane;
 import model.objects.SimulationObject;
-import model.objects.Unit;
+import model.objects.units.Unit;
 
 import java.awt.*;
 import java.util.Timer;

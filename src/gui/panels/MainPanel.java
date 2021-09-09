@@ -5,7 +5,7 @@ import gui.labels.ObjectLabelSize;
 import gui.labels.UnitLabel;
 import model.BattleField;
 import model.objects.StaticSimulationObject;
-import model.objects.Unit;
+import model.objects.units.Unit;
 import service.UnitDatabase;
 
 import javax.swing.*;

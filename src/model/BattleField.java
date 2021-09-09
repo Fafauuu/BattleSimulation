@@ -4,6 +4,7 @@ import exceptions.CantStackObjectsException;
 import exceptions.NoSuchObjectException;
 import exceptions.ObjectOutOfFieldException;
 import model.objects.*;
+import model.objects.units.Unit;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -42,8 +43,10 @@ public class BattleField {
         if (!(battleField.get(xCoordinate).get(yCoordinate) instanceof Passable)){
             throw new CantStackObjectsException(tree + "tried to stack");
         }
-        battleField.get(xCoordinate).add(yCoordinate, tree);
-        staticSimulationObjects.add(0,tree);
+        StaticSimulationObject previousObject = (StaticSimulationObject) battleField.get(xCoordinate).get(yCoordinate);
+        int index = staticSimulationObjects.indexOf(previousObject);
+        staticSimulationObjects.set(index,tree);
+        battleField.get(xCoordinate).set(yCoordinate, tree);
     }
 
     public StaticSimulationObject getStaticSimulationObjectWithXAndY(int x, int y){
@@ -68,7 +71,7 @@ public class BattleField {
     }
 
     public void setSingleFieldWithUnit(int x, int y, Unit unit){
-        if (x < fieldSize && y < fieldSize){
+        if (x < fieldSize &&  x >= 0 && y < fieldSize && y >= 0){
             if (battleField.get(x).get(y) instanceof Passable) {
                 battleField.get(x).set(y, unit);
             }
@@ -85,16 +88,7 @@ public class BattleField {
         return fieldSize;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder field = new StringBuilder();
-
-        for (int i = 0; i < fieldSize; i++) {
-            for (int j = 0; j < fieldSize; j++) {
-                field.append(this.battleField.get(i).get(j).toString());
-            }
-            field.append("\n");
-        }
-        return field.toString();
+    public SimulationObject getSingleField(int x, int y){
+        return battleField.get(x).get(y);
     }
 }

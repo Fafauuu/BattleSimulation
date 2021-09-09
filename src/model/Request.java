@@ -1,6 +1,6 @@
 package model;
 
-import model.objects.Unit;
+import model.objects.units.Unit;
 
 public class Request {
     private final Unit requester;

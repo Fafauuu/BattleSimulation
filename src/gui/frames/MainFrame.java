@@ -32,7 +32,7 @@ public class MainFrame extends JFrame {
 
 
 //        JLabel jLabel = new JLabel();
-//        jLabel.setIcon(new ImageIcon("src/icons/knight.png"));
+//        jLabel.setIcon(new ImageIcon("src/icons/knightIcon.png"));
 //        jLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
 //        jLabel.setText("wtf");
 //        jLabel.setBounds(0,0,200,200);
