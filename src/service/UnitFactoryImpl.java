@@ -11,27 +11,6 @@ public class UnitFactoryImpl implements UnitFactory {
     }
 
     @Override
-    public void createKnightsFormation(Side side, int startingX, int finalX, int startingY, int finalY) {
-        if (finalX < startingX) {
-            int buff = startingX;
-            startingX = finalX;
-            finalX = buff;
-        }
-
-        if (finalY < startingY) {
-            int buff = startingY;
-            startingY = finalY;
-            finalY = buff;
-        }
-
-        for (int x = startingX; x <= finalX; x++) {
-            for (int y = startingY; y <= finalY; y++) {
-                    createKnight(side, x, y);
-            }
-        }
-    }
-
-    @Override
     public void createKnight(Side side, int XCoordinate, int YCoordinate) {
         Knight knight = new Knight(side, XCoordinate, YCoordinate);
         if (side == Side.BLUE) {
@@ -39,27 +18,6 @@ public class UnitFactoryImpl implements UnitFactory {
         }
         if (side == Side.RED) {
             unitDatabase.addRedUnit(knight);
-        }
-    }
-
-    @Override
-    public void createAxemanFormation(Side side, int startingX, int finalX, int startingY, int finalY) {
-        if (finalX < startingX) {
-            int buff = startingX;
-            startingX = finalX;
-            finalX = buff;
-        }
-
-        if (finalY < startingY) {
-            int buff = startingY;
-            startingY = finalY;
-            finalY = buff;
-        }
-
-        for (int x = startingX; x <= finalX; x++) {
-            for (int y = startingY; y <= finalY; y++) {
-                createAxeman(side, x, y);
-            }
         }
     }
 
@@ -75,27 +33,6 @@ public class UnitFactoryImpl implements UnitFactory {
     }
 
     @Override
-    public void createCavalryFormation(Side side, int startingX, int finalX, int startingY, int finalY) {
-        if (finalX < startingX) {
-            int buff = startingX;
-            startingX = finalX;
-            finalX = buff;
-        }
-
-        if (finalY < startingY) {
-            int buff = startingY;
-            startingY = finalY;
-            finalY = buff;
-        }
-
-        for (int x = startingX; x <= finalX; x++) {
-            for (int y = startingY; y <= finalY; y++) {
-                createCavalry(side, x, y);
-            }
-        }
-    }
-
-    @Override
     public void createCavalry(Side side, int XCoordinate, int YCoordinate) {
         Cavalry cavalry = new Cavalry(side, XCoordinate, YCoordinate);
         if (side == Side.BLUE) {
@@ -105,28 +42,6 @@ public class UnitFactoryImpl implements UnitFactory {
             unitDatabase.addRedUnit(cavalry);
         }
     }
-
-    @Override
-    public void createArcherFormation(Side side, int startingX, int finalX, int startingY, int finalY) {
-        if (finalX < startingX) {
-            int buff = startingX;
-            startingX = finalX;
-            finalX = buff;
-        }
-
-        if (finalY < startingY) {
-            int buff = startingY;
-            startingY = finalY;
-            finalY = buff;
-        }
-
-        for (int x = startingX; x <= finalX; x++) {
-            for (int y = startingY; y <= finalY; y++) {
-                createArcher(side, x, y);
-            }
-        }
-    }
-
     @Override
     public void createArcher(Side side, int XCoordinate, int YCoordinate) {
         Archer archer = new Archer(side, XCoordinate, YCoordinate);
@@ -135,27 +50,6 @@ public class UnitFactoryImpl implements UnitFactory {
         }
         if (side == Side.RED) {
             unitDatabase.addRedUnit(archer);
-        }
-    }
-
-    @Override
-    public void createMageFormation(Side side, int startingX, int finalX, int startingY, int finalY) {
-        if (finalX < startingX) {
-            int buff = startingX;
-            startingX = finalX;
-            finalX = buff;
-        }
-
-        if (finalY < startingY) {
-            int buff = startingY;
-            startingY = finalY;
-            finalY = buff;
-        }
-
-        for (int x = startingX; x <= finalX; x++) {
-            for (int y = startingY; y <= finalY; y++) {
-                createMage(side, x, y);
-            }
         }
     }
 

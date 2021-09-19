@@ -33,19 +33,16 @@ public class DamageLabel extends JLabel {
     }
 
     public void setDamageLabelBounds(int labelIndex) {
-        int shiftModifier = 0;
+        int xShift = 0;
+        int yShift = 0;
         if (labelIndex != 0){
-            shiftModifier = labelIndex * 5;
+            xShift = labelIndex * 8;
+            yShift = labelIndex * 3;
         }
-        int xShift = shiftModifier;
-        int yShift = shiftModifier;
+
         int width = 50;
         int height = 30;
 
         this.setBounds(yShift, xShift, width, height);
-    }
-
-    private int getRandomNumber(int min, int max) {
-        return (int) ((Math.random() * (max - min)) + min);
     }
 }

@@ -11,8 +11,8 @@ public class DamageLayeredPane extends JLayeredPane {
 
     public void setDamageLayeredPaneBounds() {
         int labelSize = ObjectLabelSize.SIZE;
-        int xShift = labelSize/2 + 10;
-        int yShift = labelSize/2 + 10;
+        int xShift = labelSize/2 + labelSize/10;
+        int yShift = labelSize/2 + labelSize/10;
         int width = labelSize/2;
         int height = labelSize/2;
 
