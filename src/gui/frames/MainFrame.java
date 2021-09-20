@@ -29,17 +29,6 @@ public class MainFrame extends JFrame {
 
         this.add(animationPanel);
         this.add(mainPanel);
-
-
-//        JLabel jLabel = new JLabel();
-//        jLabel.setIcon(new ImageIcon("src/icons/knightIcon.png"));
-//        jLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
-//        jLabel.setText("wtf");
-//        jLabel.setBounds(0,0,200,200);
-//        jLabel.setLayout(null);
-//        jLabel.setVisible(true);
-//        this.add(jLabel);
-
     }
 
     public MainPanel getMainPanel() {

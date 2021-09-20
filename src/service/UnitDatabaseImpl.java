@@ -45,6 +45,13 @@ public class UnitDatabaseImpl implements UnitDatabase {
     }
 
     @Override
+    public void removeAllUnits() {
+        allUnits.clear();
+        redUnits.clear();
+        blueUnits.clear();
+    }
+
+    @Override
     public void removeUnit(Unit unit) {
         if (unit.getSide() == Side.BLUE) {
             blueUnits.remove(unit);

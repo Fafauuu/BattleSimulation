@@ -2,24 +2,41 @@ package service;
 
 import model.Side;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class CsvSaveReader {
+    private File file;
     private final UnitFactory unitFactory;
+    private final UnitDatabase unitDatabase;
 
-    public CsvSaveReader(UnitFactory unitFactory) {
+    public CsvSaveReader(UnitFactory unitFactory, UnitDatabase unitDatabase) {
         this.unitFactory = unitFactory;
-        readSave();
+        this.unitDatabase = unitDatabase;
+        unitDatabase.removeAllUnits();
+        loadGame();
+        readFile();
     }
 
-    public void readSave(){
+    private void loadGame() {
+        JFileChooser fileChooser = new JFileChooser("src/saves");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("*.csv", "csv");
+        fileChooser.addChoosableFileFilter(filter);
+        fileChooser.setFileFilter(filter);
+        if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            file = fileChooser.getSelectedFile();
+        }
+    }
 
+    public void readFile(){
         try{
-            BufferedReader csvReader = new BufferedReader(new FileReader("src/saves/save1.csv"));
+            BufferedReader csvReader = new BufferedReader(new FileReader(file));
 
             String line;
 

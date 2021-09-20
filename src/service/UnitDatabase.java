@@ -11,5 +11,6 @@ public interface UnitDatabase {
 
     void addBlueUnit(Unit unit);
     void addRedUnit(Unit unit);
+    void removeAllUnits();
     void removeUnit(Unit unit);
 }
