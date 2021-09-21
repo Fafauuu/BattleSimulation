@@ -4,46 +4,61 @@ import animations.Animation;
 import exceptions.CantMoveObjectException;
 import exceptions.CantStackObjectsException;
 import exceptions.ObjectOutOfFieldException;
+import gui.frames.BattlefieldFrame;
+import gui.frames.EndScreenFrame;
+import gui.frames.MainMenuFrame;
+import gui.frames.SimulationControlFrame;
 import gui.panels.DamageLabel;
-import gui.frames.MainFrame;
-import model.*;
+import model.Actions;
+import model.AttackTypes;
+import model.BattleField;
+import model.Side;
 import model.objects.units.Unit;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Engine {
     private final ActionHandler actionHandler;
-    private final BattleField battleField;
-    private final ObjectPlacementService objectPlacementService;
+    private BattleField battleField;
+    private ObjectPlacementService objectPlacementService;
     private final UnitDatabase unitDatabase;
-    private final PrintingFieldService printingFieldService;
+    private final UnitFactory unitFactory;
+    private PrintingFieldService printingFieldService;
     private final DamageCalculationService damageCalculationService;
-    private MainFrame gui;
+    private final PathFindingService pathFindingService;
+    private BattlefieldFrame gui;
+    private SimulationControlFrame simulationControlFrame;
     private final Timer timer = new Timer();
+    private boolean stopSimulation = false;
 
     public Engine(BattleField battleField,
-                  ObjectPlacementService unitPlacementService,
                   UnitDatabase unitDatabase,
-                  PrintingFieldService printingFieldService
-    ) {
+                  UnitFactory unitFactory) {
         this.actionHandler = new ActionHandler(this);
         this.battleField = battleField;
-        this.objectPlacementService = unitPlacementService;
+        this.objectPlacementService = new ObjectPlacementServiceImpl(battleField);
         this.unitDatabase = unitDatabase;
-        this.printingFieldService = printingFieldService;
+        this.unitFactory = unitFactory;
+        this.printingFieldService = new PrintingFieldServiceConsoleImpl(battleField);
         this.damageCalculationService = new DamageCalculationServiceImpl();
+        this.pathFindingService = new PathFindingService();
+
+        createNewMainMenuFrame();
     }
 
     //pause for at least 800 to simulate properly
+
     public void simulateBattle() {
         printingFieldService.print();
-        gui = new MainFrame(battleField, unitDatabase);
+        gui = new BattlefieldFrame(battleField, unitDatabase);
         gui.setVisible(true);
         pauseSimulation(1300);
         for (int turn = 0; !simulationStopCondition(); turn++) {
+            while (stopSimulation){
+                pauseSimulation(100);
+            }
             List<Unit> units = setUnitsTurn(turn);
             setTargets(units);
             setRequests(units);
@@ -55,13 +70,20 @@ public class Engine {
         }
         printingFieldService.print();
     }
-
     private void pauseSimulation(int duration) {
         try {
             Thread.sleep(duration);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void stopSimulation(){
+        stopSimulation = true;
+    }
+
+    public void resumeSimulation(){
+        stopSimulation = false;
     }
 
     private boolean simulationStopCondition() {
@@ -131,7 +153,8 @@ public class Engine {
         if (targetIsInRange(unit)) {
             actionHandler.setRequest(unit, Actions.ATTACK);
         } else {
-            actionHandler.setRequest(unit, setFirstDirection(unit), setSecondDirection(unit));
+            List<Actions> actions = pathFindingService.setFirstAndSecondDirection(unit);
+            actionHandler.setRequest(unit, actions.get(0), actions.get(1));
         }
     }
 
@@ -144,76 +167,6 @@ public class Engine {
             return distance <= unit.getStatistics().getSpecialAttack().getRange();
         }
     }
-
-    private Actions setFirstDirection(Unit unit) {
-        return setFirstAndSecondDirection(unit).get(0);
-    }
-
-    private Actions setSecondDirection(Unit unit) {
-        return setFirstAndSecondDirection(unit).get(1);
-    }
-
-    public List<Actions> setFirstAndSecondDirection(Unit unit) {
-        Actions firstDirection;
-        Actions secondDirection;
-
-        int XDifference = checkXDifference(unit, unit.getTarget());
-        int YDifference = checkYDifference(unit, unit.getTarget());
-
-        boolean XDifferenceGreaterThatY = Math.abs(XDifference) > Math.abs(YDifference);
-        boolean XDifferenceGreaterOrEqualToY = Math.abs(XDifference) >= Math.abs(YDifference);
-
-
-        if (XDifference <= 0 && YDifference > 0) {
-            if (XDifferenceGreaterThatY) {
-                firstDirection = Actions.MOVE_UP;
-                secondDirection = Actions.MOVE_RIGHT;
-            } else {
-                firstDirection = Actions.MOVE_RIGHT;
-                secondDirection = Actions.MOVE_UP;
-            }
-        } else if (XDifference > 0 && YDifference >= 0) {
-            if (XDifferenceGreaterOrEqualToY) {
-                firstDirection = Actions.MOVE_DOWN;
-                secondDirection = Actions.MOVE_RIGHT;
-            } else {
-                firstDirection = Actions.MOVE_RIGHT;
-                secondDirection = Actions.MOVE_DOWN;
-            }
-        } else if (XDifference >= 0 && YDifference < 0) {
-            if (XDifferenceGreaterThatY) {
-                firstDirection = Actions.MOVE_DOWN;
-                secondDirection = Actions.MOVE_LEFT;
-            } else {
-                firstDirection = Actions.MOVE_LEFT;
-                secondDirection = Actions.MOVE_DOWN;
-            }
-        } else {
-            if (XDifferenceGreaterOrEqualToY) {
-                firstDirection = Actions.MOVE_UP;
-                secondDirection = Actions.MOVE_LEFT;
-            } else {
-                firstDirection = Actions.MOVE_LEFT;
-                secondDirection = Actions.MOVE_UP;
-            }
-        }
-        return new ArrayList<>(List.of(firstDirection, secondDirection));
-    }
-
-    private int checkXDifference(Unit unit, Unit target) {
-        int unitXCoordinate = unit.getXCoordinate();
-        int targetXCoordinate = target.getXCoordinate();
-
-        return targetXCoordinate - unitXCoordinate;
-    }
-
-    private int checkYDifference(Unit unit, Unit target) {
-        int unitYCoordinate = unit.getYCoordinate();
-        int targetYCoordinate = target.getYCoordinate();
-
-        return targetYCoordinate - unitYCoordinate;
-    }
-
 
     public void move(Unit unit, int XPositionModifier, int YPositionModifier) throws CantMoveObjectException {
         int previousXCoordinate = unit.getXCoordinate();
@@ -285,7 +238,48 @@ public class Engine {
         }
     }
 
+    public void restartSimulation(){
+        battleField = new BattleField(10);
+        unitDatabase.removeAllUnits();
+        actionHandler.dropAllRequests();
+        objectPlacementService = new ObjectPlacementServiceImpl(battleField);
+        printingFieldService = new PrintingFieldServiceConsoleImpl(battleField);
+        gui.dispose();
+    }
+
+    public void createNewMainMenuFrame(){
+        new MainMenuFrame(this);
+    }
+
+    public void createNewEndScreenFrame(){
+        new EndScreenFrame(this);
+    }
+
+    public void createNewSimulationControlFrame(){
+        simulationControlFrame = new SimulationControlFrame(this);
+    }
+
+    public void removeSimulationControlFrame(){
+        simulationControlFrame.dispose();
+    }
+
     public DamageCalculationService getDamageCalculationService() {
         return damageCalculationService;
+    }
+
+    public UnitFactory getUnitFactory() {
+        return unitFactory;
+    }
+
+    public UnitDatabase getUnitDatabase() {
+        return unitDatabase;
+    }
+
+    public ObjectPlacementService getObjectPlacementService() {
+        return objectPlacementService;
+    }
+
+    public PathFindingService getPathFindingService() {
+        return pathFindingService;
     }
 }

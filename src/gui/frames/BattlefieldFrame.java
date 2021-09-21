@@ -8,12 +8,11 @@ import service.UnitDatabase;
 import javax.swing.*;
 import java.awt.*;
 
-public class MainFrame extends JFrame {
-
+public class BattlefieldFrame extends JFrame {
     MainPanel mainPanel;
     AnimationPanel animationPanel;
 
-    public MainFrame(BattleField battlefield, UnitDatabase unitDatabase) {
+    public BattlefieldFrame(BattleField battlefield, UnitDatabase unitDatabase) {
 
         mainPanel = new MainPanel(battlefield, unitDatabase);
         mainPanel.setBounds(mainPanel.getBounds());

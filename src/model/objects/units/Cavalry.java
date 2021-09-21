@@ -25,7 +25,7 @@ public class Cavalry extends AUnit {
                 100,
                 50,
                 40,
-                new Attack(AttackTypes.PHYSICAL, 20, 1),
+                new Attack(AttackTypes.PHYSICAL, 22, 1),
                 new Attack(AttackTypes.PHYSICAL, 100, 3),
                 0
         );
@@ -54,7 +54,7 @@ public class Cavalry extends AUnit {
         double initialDistance;
 
         while (engine.countDistance(this, target) > this.statistics.getBasicAttack().getRange()) {
-            List<Actions> movementActions = engine.setFirstAndSecondDirection(this);
+            List<Actions> movementActions = engine.getPathFindingService().setFirstAndSecondDirection(this);
              initialDistance = engine.countDistance(this, target);
             try {
                 charge(engine, movementActions.get(0));
